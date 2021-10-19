@@ -10,8 +10,8 @@ public:
 	~App();
 
 private:
-	Main* baseFrame = nullptr;
-
+	Main* mainFrame = nullptr;
+	Peer localpeer;
 public:
 	virtual bool OnInit();
 };

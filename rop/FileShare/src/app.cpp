@@ -14,8 +14,8 @@ App::~App()
 
 bool App::OnInit()
 {
-    baseFrame = new Main();
-    baseFrame->Show();
-    FreeConsole();
+    mainFrame = new Main();
+    mainFrame->Show();
+    localpeer.run();
     return true;
 }

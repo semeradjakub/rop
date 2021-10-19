@@ -5,13 +5,11 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Frames">
+      <UniqueIdentifier>{b0a056db-9a0c-4cde-a5c6-903f851df967}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Networking">
+      <UniqueIdentifier>{f4973064-0e84-4cb8-9ae2-098850a8f1bf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,15 +17,34 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp">
+      <Filter>Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="src\peer.cpp">
+      <Filter>Networking</Filter>
+    </ClCompile>
+    <ClCompile Include="src\server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\networkbase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\app.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\main.h">
-      <Filter>Header Files</Filter>
+      <Filter>Frames</Filter>
     </ClInclude>
+    <ClInclude Include="src\peer.h">
+      <Filter>Networking</Filter>
+    </ClInclude>
+    <ClInclude Include="src\app.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\server.h" />
+    <ClInclude Include="src\client.h" />
+    <ClInclude Include="src\peerinfo.h" />
+    <ClInclude Include="src\networkbase.h" />
   </ItemGroup>
 </Project>

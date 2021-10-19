@@ -1,4 +1,7 @@
 ﻿  app.cpp
+  client.cpp
   main.cpp
-  Generating Code...
+  peer.cpp
+  server.cpp
+  Generování kódu...
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe
