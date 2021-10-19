@@ -1,4 +1,4 @@
-#include "App.h"
+#include "app.h"
 
 wxIMPLEMENT_APP_CONSOLE(App);
 
@@ -14,8 +14,8 @@ App::~App()
 
 bool App::OnInit()
 {
-    mainFrame = new Main();
+    mainFrame = new Main(localpeer);
     mainFrame->Show();
-    localpeer.run();
+    localpeer.Run();
     return true;
 }

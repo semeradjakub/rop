@@ -178,6 +178,7 @@
     <ClInclude Include="src\peer.h" />
     <ClInclude Include="src\peerinfo.h" />
     <ClInclude Include="src\server.h" />
+    <ClInclude Include="src\vars.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

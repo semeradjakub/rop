@@ -18,11 +18,13 @@ NetworkBase::~NetworkBase()
 	WSACleanup();
 }
 
-void NetworkBase::send()
+void NetworkBase::addPeer(PeerInfo& peer)
 {
+	peers.push_back(peer);
 }
 
-void NetworkBase::receive()
+void NetworkBase::removePeer(int index)
 {
+	peers.erase(peers.begin() + index);
 }
 

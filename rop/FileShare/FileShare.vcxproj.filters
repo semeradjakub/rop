@@ -46,5 +46,6 @@
     <ClInclude Include="src\client.h" />
     <ClInclude Include="src\peerinfo.h" />
     <ClInclude Include="src\networkbase.h" />
+    <ClInclude Include="src\vars.h" />
   </ItemGroup>
 </Project>

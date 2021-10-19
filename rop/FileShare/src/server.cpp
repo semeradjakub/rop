@@ -42,13 +42,16 @@ void Server::acceptConnections()
 	memset(service, 0, NI_MAXSERV);
 
 	newPeerSock = accept(listenSock, (sockaddr*)&newPeerAddr, &peerSize);
+	u_long mode = 1;
+	ioctlsocket(newPeerSock, FIONBIO, &mode);
 	std::cout << inet_ntoa(newPeerAddr.sin_addr) << ":" << ntohs(newPeerAddr.sin_port) << "\n";
 	newPeer.peerAddr = newPeerAddr;
 	newPeer.peerSock = newPeerSock;
-	peers.push_back(newPeer);
+	addPeer(newPeer);
 }
 
-void Server::terminate(PeerInfo& peer)
+void Server::terminate(int peerIndex)
 {
-	closesocket(peer.peerSock);
+	closesocket(peers.at(peerIndex).peerSock);
+	removePeer(peerIndex);
 }

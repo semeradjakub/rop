@@ -8,13 +8,22 @@
 class Main : public wxFrame
 {
 public:
-
-	Main();
+	Main(Peer& localpeer);
 	~Main();
+	Peer& localpeer;
+private:
+	void onClose(wxCloseEvent& evt);
 
 private:
+	wxBoxSizer* mainSizer;
 
-	void onClose(wxCloseEvent& evt);
+protected:
+	wxPanel* menuPanel;
+	wxBitmapButton* menubtnUser;
+	wxBitmapButton* menubtnNetwork;
+	wxBitmapButton* menubtnSettings;
+	wxPanel* optionPanel;
+	wxPanel* contentPanel;
 
 	DECLARE_EVENT_TABLE()
 };

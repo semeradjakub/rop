@@ -1,7 +1,5 @@
-﻿  app.cpp
-  client.cpp
-  main.cpp
-  peer.cpp
+﻿  peer.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(51,21): warning C4018: <: signed/unsigned – neshoda
   server.cpp
   Generování kódu...
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

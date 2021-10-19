@@ -10,7 +10,7 @@ protected:
 	void runServer();
 	void handleConnections();
 	void acceptConnections();
-	void terminate(PeerInfo& peer);
+	void terminate(int peerIndex);
 protected:
 	SOCKET listenSock = 0;
 };
