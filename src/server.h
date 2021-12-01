@@ -1,16 +1,23 @@
 #pragma once
-#include "networkbase.h"
+#include <winsock.h>
+#include <Windows.h>
+#include <iostream>
+#include <thread>
+#include <string>
+#include <vector>
+#include "peerinfo.h"
 
-class Server : public NetworkBase
+class Server
 {
 public:
-	Server();
+	Server(std::vector<PeerInfo>* peers);
 	~Server();
-protected:
-	void runServer();
-	void handleConnections();
+	bool start();
 	void acceptConnections();
-	void terminate(int peerIndex);
-protected:
+private:
+	bool running = false;
+	std::thread thread;
+	void run();
+	std::vector<PeerInfo>* peers;
 	SOCKET listenSock = 0;
 };

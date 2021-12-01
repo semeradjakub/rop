@@ -2,6 +2,7 @@
 
 BEGIN_EVENT_TABLE(Main, wxFrame)
 	EVT_CLOSE(Main::onClose)
+	
 END_EVENT_TABLE()
 
 Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(100, 100), wxSize(550, 550)), localpeer(localpeer)
@@ -62,7 +63,7 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	subSizer3->Fit(contentPanel);
 	mainSizer->Add(contentPanel, 5, wxEXPAND, 0);
 
-
+	
 	this->SetSizer(mainSizer);
 	this->Layout();
 

@@ -28,9 +28,6 @@
     <ClCompile Include="src\client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\networkbase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
@@ -45,7 +42,6 @@
     <ClInclude Include="src\server.h" />
     <ClInclude Include="src\client.h" />
     <ClInclude Include="src\peerinfo.h" />
-    <ClInclude Include="src\networkbase.h" />
-    <ClInclude Include="src\vars.h" />
+    <ClInclude Include="src\Helper.h" />
   </ItemGroup>
 </Project>
