@@ -1,5 +1,5 @@
-﻿  peer.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(51,21): warning C4018: <: signed/unsigned – neshoda
-  server.cpp
-  Generování kódu...
+﻿  client.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(79,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(124,54): warning C4244: argument: std::streamsize se převádí na int; může dojít ke ztrátě dat.
+  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe
