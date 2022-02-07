@@ -7,43 +7,40 @@
 #include <fstream>
 #include <vector>
 #include <filesystem>
-#include "Helper.h"
 #include "peerinfo.h"
 #include "fileinfo.h"
+#include "globals.h"
 
 typedef const char* status;
 typedef const char* request;
+typedef const char* message;
 
-
-//DO REQUEST HANDLING
 class Client
 {
 public:
-	Client(std::vector<PeerInfo>* peers); //working
-	~Client(); //working
-	bool start(); //working
-	bool Connect(std::string ip, short port); //working
-	void Disconnect(int peerIndex); //working
-	void Disconnect(SOCKET& from); //working
+	Client(std::vector<PeerInfo>* peers, std::string* localID); 
+	~Client(); 
+	bool start(); 
 
-	void sendFile(SOCKET& peer); //working
-	bool downloadFile(SOCKET& peer, std::string fileName); //working
+	PeerInfo* Connect(std::string& ip, short port);
+	bool Disconnect(std::string& ip);
 
-private:
-	bool requestFile(SOCKET& peer, std::string fileName); //working
-	bool recvFile(SOCKET& peer, std::string fileRequested); //working
+	void sendFile(SOCKET& peer); 
+	bool downloadFile(SOCKET& peer, std::string fileName); 
 	bool getDirectoryContent(PeerInfo& peer);
-	void sendDirectoryContent(SOCKET& peer);
-	int64_t getFileSize(std::ifstream& file); //working
 
 private:
-	void handleRequests();
+	bool requestFile(SOCKET& peer, std::string fileName); 
+	bool recvFile(SOCKET& peer, std::string fileRequested);
+	void sendDirectoryContent(SOCKET& peer);
+	int64_t getFileSize(std::ifstream& file);
 
 private:
 	bool running = false;
 	std::thread thread;
 	void run();
 	std::vector<PeerInfo>* peers;
+	std::string* localID = nullptr;
 
 private:
 	void setSocketMode(SOCKET& sock, u_long& mode);
@@ -62,21 +59,26 @@ private:
 private:
 	static const int requestSize = 4;
 	static const int statusSize = 4;
+	static const int messageSize = 4;
 
-	status s_fileNotAvailable = "\xbb\x55\x20\xaa";
-	status s_fileAvailable = "\xbb\x55\x20\xbb";
-	status s_readyToReceive = "\xbb\xaa\xf0\x97";
-	status s_nextMetaFile = "\xbb\xaa\x52\x30";
-	status s_endMetaFile = "\xbb\x78\x55\x30";
-	status s_receivedRequest = "\xbb\x55\x62\x33";
-	status s_receivedData = "\xbb\x88\x51\x32";
-	status s_requestHandled = "\xbb\xaa\xbb\x11";
+	status s_fileNotAvailable = "\x73\x66\x6E\x61";
+	status s_fileAvailable = "\x73\x66\x69\x61";
+	status s_readyToReceive = "\x73\x72\x74\x72";
+	status s_nextMetaFile = "\x73\x6E\x6D\x66";
+	status s_endMetaFile = "\x73\x65\x6D\x66";
+	status s_receivedRequest = "\x73\x72\x65\x72";
+	status s_receivedData = "\x73\x72\x65\x64";
+	status s_requestHandled = "\x73\x72\x65\x68";
+	status s_genericError = "\x73\x67\x65\x72";
 
-	status s_genericError = "\xbb\x55\xb4\x0a";
+	message m_disconnect = "\x68\x62\x79\x65";
+	message m_welcome = "\x68\x65\x6C\x6F";
+	message m_connect = "\x68\x63\x6F\x6E";
 
-	request r_unknown = "\xaa\x05\x0a\xff";
-	request r_getDirectoryContent = "\xaa\xbb\xcc\xdd";
-	request r_getFileSize = "\xaa\x50\xff\x00";
-	request r_sendFile = "\xaa\x10\x02\x20";
-	request r_downloadFile = "\xaa\x20\x01\x10";
+	request r_unknown = "\x72\x75\x6E\x6B";
+	request r_getDirectoryContent = "\x72\x67\x64\x63";
+	request r_getFileSize = "\x72\x67\x66\x73";
+	request r_sendFile = "\x72\x73\x65\x66";
+	request r_downloadFile = "\x72\x64\x77\x66";
+
 };

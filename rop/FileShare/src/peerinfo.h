@@ -3,15 +3,11 @@
 #include <string>
 #include "fileinfo.h"
 
-#define LISTENPORT 12346
-#define LOCALHOST "127.0.0.1"
-#define NI_MAXHOST 1025
-#define NI_MAXSERV 32
-
 struct PeerInfo
 {
+	bool available = false;
 	SOCKET peerSock;
 	sockaddr_in peerHint;
-
+	std::string id = "";
 	std::vector<FileInfo> files;
 };

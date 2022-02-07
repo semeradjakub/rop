@@ -173,7 +173,7 @@
     <ClInclude Include="src\app.h" />
     <ClInclude Include="src\client.h" />
     <ClInclude Include="src\fileinfo.h" />
-    <ClInclude Include="src\Helper.h" />
+    <ClInclude Include="src\globals.h" />
     <ClInclude Include="src\main.h" />
     <ClInclude Include="src\peer.h" />
     <ClInclude Include="src\peerinfo.h" />

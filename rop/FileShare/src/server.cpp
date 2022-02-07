@@ -1,8 +1,9 @@
 #include "server.h"
 
-Server::Server(std::vector<PeerInfo>* peers)
+Server::Server(std::vector<PeerInfo>* peers, std::string* localID)
 {
 	this->peers = peers;
+	this->localID = localID;
 	listenSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	sockaddr_in listenHint;
 	listenHint.sin_family = AF_INET;
@@ -12,14 +13,12 @@ Server::Server(std::vector<PeerInfo>* peers)
 	listen(listenSock, SOMAXCONN);
 }
 
-//deletes main server thread
 Server::~Server()
 {
 	running = false;
 	thread.join();
 }
 
-//creates main server thread
 bool Server::start()
 {
 	running = true;
@@ -44,6 +43,8 @@ void Server::acceptConnections()
 	SOCKET newPeerSock;
 	sockaddr_in newPeerHint;
 	int peerSize = sizeof(newPeerHint);
+	int bytesReceived = 0;
+	char data[dataBufferSize];
 	char host[NI_MAXHOST];
 	char service[NI_MAXSERV];
 
@@ -52,12 +53,25 @@ void Server::acceptConnections()
 
 	newPeerSock = accept(listenSock, (sockaddr*)&newPeerHint, &peerSize);
 
+	u_long blocking = 0;
+	ioctlsocket(newPeerSock, FIONBIO, &blocking);
+
 	if (newPeerSock != SOCKET_ERROR)
 	{
-		std::cout << inet_ntoa(newPeerHint.sin_addr) << ":" << ntohs(newPeerHint.sin_port) << "\n";
-		newPeer.peerHint = newPeerHint;
-		newPeer.peerSock = newPeerSock;
-		peers->push_back(newPeer);
+		recv(newPeerSock, data, dataBufferSize, 0);
+		if (std::string(data, messageSize) == m_connect)
+		{
+			send(newPeerSock, m_welcome, messageSize, 0);
+			bytesReceived = recv(newPeerSock, data, dataBufferSize, 0);
+			send(newPeerSock, localID->c_str(), localID->length(), 0);
+			if (bytesReceived > 0)
+				newPeer.id = std::string(data, bytesReceived);
+			newPeer.peerHint = newPeerHint;
+			newPeer.peerSock = newPeerSock;
+			u_long nonblocking = 1;
+			ioctlsocket(newPeer.peerSock, FIONBIO, &nonblocking);
+			newPeer.available = true;
+			peers->push_back(newPeer);
+		}
 	}
 }
-

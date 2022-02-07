@@ -3,8 +3,8 @@
 Peer::Peer(std::string ip)
 {
 	WSAStartup(version, &wsaData);
-	client = new Client(&peers);
-	server = new Server(&peers);
+	client = new Client(&peers, &localID);
+	server = new Server(&peers, &localID);
 }
 
 Peer::~Peer()
@@ -19,42 +19,49 @@ bool Peer::start()
 	return (server->start() && client->start());
 }
 
-void Peer::SendFile(SOCKET& to, uint8_t flags)
+bool Peer::DownloadFile(SOCKET& from, std::string fileName, uint8_t flags)
 {
-	client->sendFile(to);
+	return client->downloadFile(from, fileName);
 }
 
-void Peer::DownloadFile(SOCKET& from, std::string fileName, uint8_t flags)
+bool Peer::GetPeerDirectoryContent(PeerInfo& peer)
 {
-	client->downloadFile(from, fileName);
+	return client->getDirectoryContent(peer);
 }
 
-void Peer::Connect(std::string ip, short port)
+PeerInfo* Peer::Connect(std::string& ip)
 {
-	client->Connect(ip, port);
+	return client->Connect(ip, 55667);
 }
 
-void Peer::Disconnect(int peerIndex)
+bool Peer::Disconnect(std::string& ip)
 {
-	client->Disconnect(peerIndex);
+	return client->Disconnect(ip);
 }
 
-void Peer::Disconnect(SOCKET& from)
+PeerInfo* Peer::GetPeerById(std::string& id)
 {
-	client->Disconnect(from);
+	PeerInfo* peer = nullptr;
+	for (int i = 0; i < peers.size(); i++)
+		if (peers.at(i).id == id)
+		{
+			peer = &peers.at(i);
+			break;
+		}
+	return peer;
+}
+
+void Peer::setID(std::string localID)
+{
+	this->localID = localID;
+}
+
+std::string Peer::getID()
+{
+	return localID;
 }
 
 std::vector<PeerInfo>& Peer::getPeerList()
 {
 	return peers;
-}
-
-PeerInfo& Peer::getPeer(int index)
-{
-	return peers.at(index);
-}
-
-SOCKET& Peer::getPeerSock(int index)
-{
-	return peers.at(index).peerSock;
 }

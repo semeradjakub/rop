@@ -2,6 +2,7 @@
 #include "server.h"
 #include "client.h"
 #include "peerinfo.h"
+#include "globals.h"
 
 class Peer
 {
@@ -10,20 +11,25 @@ public:
 	~Peer();
 	bool start();
 
-	void SendFile(SOCKET& to, uint8_t flags);
-	void DownloadFile(SOCKET& from, std::string fileName, uint8_t flags);
-	void Connect(std::string ip, short port);
-	void Disconnect(int peerIndex);
-	void Disconnect(SOCKET& from);
+	bool DownloadFile(SOCKET& from, std::string fileName, uint8_t flags);
+	bool GetPeerDirectoryContent(PeerInfo& peer);
+	PeerInfo* Connect(std::string& ip);
+	bool Disconnect(std::string& ip);
+	PeerInfo* GetPeerById(std::string& id);
+	void setID(std::string localID);
+	std::string getID();
 
 	std::vector<PeerInfo>& getPeerList();
-	PeerInfo& getPeer(int index);
-	SOCKET& getPeerSock(int index);
 
 private:
 	WSAData wsaData;
 	const WORD version = MAKEWORD(3, 0);
 	std::vector<PeerInfo> peers;
+
+private:
+	std::string localID = "";
+	uint8_t defaultIdLength = 12;
+
 private:
 	Client* client = nullptr;
 	Server* server = nullptr;
