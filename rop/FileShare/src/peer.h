@@ -4,6 +4,9 @@
 #include "peerinfo.h"
 #include "globals.h"
 
+/*
+* Interface for GUI(main class)
+*/
 class Peer
 {
 public:

@@ -1,6 +1,5 @@
 ﻿  app.cpp
   client.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(25,7): warning C4101: receiveBuffer: neodkazovaná lokální proměnná
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(96,20): warning C4018: <: signed/unsigned – neshoda
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(145,55): warning C4244: argument: std::streamsize se převádí na int; může dojít ke ztrátě dat.
   main.cpp
@@ -10,4 +9,5 @@ C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(34,29): warning C4309: arg
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(45,20): warning C4018: <: signed/unsigned – neshoda
   server.cpp
   Generování kódu...
+  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

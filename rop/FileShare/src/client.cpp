@@ -12,6 +12,9 @@ Client::~Client()
 	thread.join();
 }
 
+/*
+* creates client thread -> run() function
+*/
 bool Client::start()
 {
 	running = true;
@@ -25,7 +28,7 @@ void Client::run()
 	char receiveBuffer[dataBufferSize];
 	std::string receivedStr;
 	
-	/*while (running)
+	while (running)
 	{
 		int peersSize = peers->size();
 		for (int i = 0; i < peersSize; i++)
@@ -49,9 +52,13 @@ void Client::run()
 
 			}
 		}
-	}*/
+	}
 }
 
+
+/*
+* sets socket into blocking / non-blocking mode
+*/
 void Client::setSocketMode(SOCKET& sock, u_long& mode)
 {
 	if(sock != INVALID_SOCKET)

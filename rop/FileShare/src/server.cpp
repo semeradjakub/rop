@@ -19,6 +19,9 @@ Server::~Server()
 	thread.join();
 }
 
+/*
+* creates server thread -> run() function
+*/
 bool Server::start()
 {
 	running = true;
@@ -33,10 +36,15 @@ void Server::run()
 {
 	while (running)
 	{
-		acceptConnections();
+		//if access is allowed, accept ingress connections
+		if(accessAllowed)
+			acceptConnections();
 	}
 }
 
+/*
+* Accepts ingress connections and store these connections in peers list
+*/
 void Server::acceptConnections()
 {
 	PeerInfo newPeer;
