@@ -175,7 +175,6 @@ void Main::disconnectFromPeer(wxCommandEvent& event)
 	
 	if (selectedPeer != -1)
 	{
-
 		std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 		std::string ip = inet_ntoa(localpeer.GetPeerById(id)->peerHint.sin_addr);
 		if (!localpeer.Disconnect(ip))

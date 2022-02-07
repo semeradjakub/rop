@@ -1,5 +1,8 @@
 wx315/*
 rop/.vs/*
-rop/bin
+rop/bin/*
 rop/FileShare/*.user
+upload/*
+download/*
+wxFormBuilder.Ink
 

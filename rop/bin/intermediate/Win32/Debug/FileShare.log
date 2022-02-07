@@ -10,5 +10,4 @@ C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(34,29): warning C4309: arg
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(45,20): warning C4018: <: signed/unsigned – neshoda
   server.cpp
   Generování kódu...
-  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe
