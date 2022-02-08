@@ -20,7 +20,7 @@ Server::~Server()
 }
 
 /*
-* creates server thread -> run() function
+* creates server thread
 */
 bool Server::start()
 {
@@ -37,7 +37,7 @@ void Server::run()
 	while (running)
 	{
 		//if access is allowed, accept ingress connections
-		if(accessAllowed)
+		if(newConnectionsAccepted)
 			acceptConnections();
 	}
 }

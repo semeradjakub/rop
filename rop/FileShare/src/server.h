@@ -24,7 +24,7 @@ private:
 	SOCKET listenSock = 0;
 
 private:
-	bool accessAllowed = false; // = true(peers are going to be able to connect)
+	bool newConnectionsAccepted = true; // = true(peers are going to be able to connect)
 	std::vector<PeerInfo>* peers;
 	std::string* localID = nullptr;
 

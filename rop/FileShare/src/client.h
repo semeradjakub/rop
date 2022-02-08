@@ -41,6 +41,7 @@ private:
 	void run();
 	std::vector<PeerInfo>* peers;
 	std::string* localID = nullptr;
+	bool fileSharingAllowed = true;
 
 private:
 	void setSocketMode(SOCKET& sock, u_long& mode);
@@ -63,6 +64,7 @@ private:
 
 	status s_fileNotAvailable = "\x73\x66\x6E\x61";
 	status s_fileAvailable = "\x73\x66\x69\x61";
+	status s_idChange = "\x73\x64\x65\x61";
 	status s_readyToReceive = "\x73\x72\x74\x72";
 	status s_nextMetaFile = "\x73\x6E\x6D\x66";
 	status s_endMetaFile = "\x73\x65\x6D\x66";

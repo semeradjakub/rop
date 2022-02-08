@@ -31,7 +31,7 @@ bool Peer::GetPeerDirectoryContent(PeerInfo& peer)
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55667);
+	return client->Connect(ip, 55666);
 }
 
 bool Peer::Disconnect(std::string& ip)

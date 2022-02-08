@@ -13,7 +13,7 @@ Client::~Client()
 }
 
 /*
-* creates client thread -> run() function
+* creates client thread
 */
 bool Client::start()
 {
@@ -38,19 +38,29 @@ void Client::run()
 
 			if (bytesReceived > 0)
 			{
+				peers->at(i).available = false;
 				receivedStr = std::string(receiveBuffer, bytesReceived);
 
-				if (receivedStr == r_getDirectoryContent)
-					sendDirectoryContent(peerSock);
-				if (receivedStr == r_downloadFile)
-					sendFile(peerSock);
+				//sending files, dir content, ...
+				if (fileSharingAllowed)
+				{
+					if (receivedStr == r_getDirectoryContent)
+						sendDirectoryContent(peerSock);
+					if (receivedStr == r_downloadFile)
+						sendFile(peerSock);
+				}
+
 				if (receivedStr == m_disconnect)
 				{
 					peers->erase(peers->begin() + i);
 					peersSize--;
 				}
+				if (receivedStr == s_idChange)
+				{
+					//create function for id change
+				}
 
-			}
+			}	
 		}
 	}
 }
