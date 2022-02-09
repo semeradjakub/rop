@@ -18,17 +18,20 @@ public:
 	bool start();
 	void acceptConnections();
 private:
-	bool running = false;
-	std::thread thread;
+	//core
 	void run();
+	std::thread thread;
 	SOCKET listenSock = 0;
-
-private:
-	bool newConnectionsAccepted = true; // = true(peers are going to be able to connect)
 	std::vector<PeerInfo>* peers;
 	std::string* localID = nullptr;
 
 private:
+	//control
+	bool running = false;
+	bool newConnectionsAccepted = true; // = true(peers are going to be able to connect)
+
+private:
+	//communication
 	static const int messageSize = 4;
 	static const int dataBufferSize = 256;
 

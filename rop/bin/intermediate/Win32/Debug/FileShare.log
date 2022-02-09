@@ -1,11 +1,14 @@
 ﻿  app.cpp
   client.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(113,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(162,55): warning C4244: argument: std::streamsize se převádí na int; může dojít ke ztrátě dat.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(112,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(161,55): warning C4244: argument: std::streamsize se převádí na int; může dojít ke ztrátě dat.
   main.cpp
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\main.cpp(138,22): warning C4018: <: signed/unsigned – neshoda
   peer.cpp
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(34,29): warning C4309: argument: zkrácení konstantní hodnoty
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(45,20): warning C4018: <: signed/unsigned – neshoda
+  server.cpp
   Generování kódu...
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(359): warning C4172: Vrací adresu lokální proměnné nebo dočasné: function.
+  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

@@ -26,11 +26,13 @@ void Client::run()
 {
 	int bytesReceived = 0;
 	char receiveBuffer[dataBufferSize];
-	std::string receivedStr;
+	std::string receivedBuffer;
+	std::string userID, dataID, dataReceived;
 	
 	while (running)
 	{
 		int peersSize = peers->size();
+
 		for (int i = 0; i < peersSize; i++)
 		{
 			SOCKET& peerSock = peers->at(i).peerSock;
@@ -38,28 +40,25 @@ void Client::run()
 
 			if (bytesReceived > 0)
 			{
-				peers->at(i).available = false;
-				receivedStr = std::string(receiveBuffer, bytesReceived);
+				receivedBuffer = std::string(receiveBuffer, bytesReceived);
+				//separate packet identificator and data - FORMAT: {[id]:[number]}-[packetData]
+				userID = receivedBuffer.substr(receivedBuffer.find("{") + 1, receivedBuffer.find(":") - receivedBuffer.find("{") - 1);
+				dataID = receivedBuffer.substr(receivedBuffer.find(":") + 1, receivedBuffer.find("}") - receivedBuffer.find(":") - 1);
+				dataReceived = receivedBuffer.substr(receivedBuffer.find("-") + 1, receivedBuffer.size() - receivedBuffer.find("-"));
 
-				//sending files, dir content, ...
-				if (fileSharingAllowed)
+				if (peers->at(i).id == userID)
 				{
-					if (receivedStr == r_getDirectoryContent)
-						sendDirectoryContent(peerSock);
-					if (receivedStr == r_downloadFile)
-						sendFile(peerSock);
+					if (peers->at(i).workers.find(dataID) != peers->at(i).workers.end())
+					{
+						//add new buffer
+						peers->at(i).workers[dataID]->receiveBuffer.push(dataReceived);
+					}
+					else
+					{
+						//create new worker, worker calls appropriate function according to the type of request
+						peers->at(i).workers[dataID] = new Worker((function)mapRequestHandlerFunction(dataReceived), peerSock);
+					}
 				}
-
-				if (receivedStr == m_disconnect)
-				{
-					peers->erase(peers->begin() + i);
-					peersSize--;
-				}
-				if (receivedStr == s_idChange)
-				{
-					//create function for id change
-				}
-
 			}	
 		}
 	}
@@ -346,5 +345,17 @@ int64_t Client::getFileSize(std::ifstream& file)
 	int64_t size = file.tellg();
 	file.seekg(0, std::ios::beg);
 	return size;
+}
+
+void* Client::mapRequestHandlerFunction(std::string request)
+{
+	void(__thiscall Client:: * function)(SOCKET & peer) = nullptr;
+
+	if (request == r_downloadFile)
+		function = &Client::sendFile;
+	else if (request == r_getDirectoryContent)
+		function = &Client::sendDirectoryContent;
+
+	return &function;
 }
 

@@ -36,7 +36,7 @@ void Server::run()
 {
 	while (running)
 	{
-		//if access is allowed, accept ingress connections
+		//if access is allowed, accept incoming connections
 		if(newConnectionsAccepted)
 			acceptConnections();
 	}
