@@ -27,7 +27,7 @@ void Client::run()
 	int bytesReceived = 0;
 	char receiveBuffer[dataBufferSize];
 	std::string receivedBuffer;
-	std::string userID, dataID, dataReceived;
+	std::string userID, requestID, dataReceived;
 	
 	while (running)
 	{
@@ -41,22 +41,22 @@ void Client::run()
 			if (bytesReceived > 0)
 			{
 				receivedBuffer = std::string(receiveBuffer, bytesReceived);
-				//separate packet identificator and data - FORMAT: {[id]:[number]}-[packetData]
+				//separate packet identificator and data - FORMAT: {[id]:[number]}-packetData
 				userID = receivedBuffer.substr(receivedBuffer.find("{") + 1, receivedBuffer.find(":") - receivedBuffer.find("{") - 1);
-				dataID = receivedBuffer.substr(receivedBuffer.find(":") + 1, receivedBuffer.find("}") - receivedBuffer.find(":") - 1);
+				requestID = receivedBuffer.substr(receivedBuffer.find(":") + 1, receivedBuffer.find("}") - receivedBuffer.find(":") - 1);
 				dataReceived = receivedBuffer.substr(receivedBuffer.find("-") + 1, receivedBuffer.size() - receivedBuffer.find("-"));
 
 				if (peers->at(i).id == userID)
 				{
-					if (peers->at(i).workers.find(dataID) != peers->at(i).workers.end())
+					if (peers->at(i).workers.find(requestID) != peers->at(i).workers.end())
 					{
 						//add new buffer
-						peers->at(i).workers[dataID]->receiveBuffer.push(dataReceived);
+						peers->at(i).workers[requestID]->receiveBuffer.push(dataReceived);
 					}
 					else
 					{
 						//create new worker, worker calls appropriate function according to the type of request
-						peers->at(i).workers[dataID] = new Worker((function)mapRequestHandlerFunction(dataReceived), peerSock);
+						peers->at(i).workers[requestID] = new Worker((function)mapRequestHandlerFunction(dataReceived), peerSock, requestID, this);
 					}
 				}
 			}	
@@ -66,7 +66,7 @@ void Client::run()
 
 
 /*
-* sets socket into blocking / non-blocking mode
+ sets socket into blocking / non-blocking mode
 */
 void Client::setSocketMode(SOCKET& sock, u_long& mode)
 {
@@ -89,7 +89,7 @@ PeerInfo* Client::Connect(std::string& ip, short port)
 
 	if (connect(peer.peerSock, (sockaddr*)&peer.peerHint, sizeof(peer.peerHint)) != SOCKET_ERROR)
 	{
-		send(peer.peerSock, m_connect, dataBufferSize, 0);
+		send(peer.peerSock, m_connect.c_str(), messageSize, 0);
 		recv(peer.peerSock, data, dataBufferSize, 0);
 		if (std::string(data, messageSize) == m_welcome)
 		{
@@ -113,7 +113,7 @@ bool Client::Disconnect(std::string& ip)
 	{
 		if (inet_ntoa(peers->at(i).peerHint.sin_addr) == ip)
 		{
-			send(peers->at(i).peerSock, m_disconnect, messageSize, 0);
+			send(peers->at(i).peerSock, m_disconnect.c_str(), messageSize, 0);
 			closesocket(peers->at(i).peerSock);
 			peers->erase(peers->begin() + i);
 			return true;
@@ -122,12 +122,11 @@ bool Client::Disconnect(std::string& ip)
 	return false;
 }
 
-void Client::sendFile(SOCKET& peer)
+void Client::sendFile(SOCKET& peer, std::string& requestID)
 {
 	if (peer != INVALID_SOCKET)
 	{
-		send(peer, s_receivedRequest, statusSize, 0);
-
+		_send(peer, s_receivedRequest, requestID);
 		setSocketMode(peer, mode_blocking);
 
 		DWORD timeout = 3;
@@ -147,9 +146,9 @@ void Client::sendFile(SOCKET& peer)
 		{
 			std::string fileSize = std::to_string(getFileSize(inFile));
 
-			send(peer, s_fileAvailable, requestSize, 0);
+			_send(peer, s_fileAvailable, requestID);
 			recv(peer, dataBuffer, dataBufferSize, 0);
-			send(peer, fileSize.c_str(), fileSize.length(), 0);
+			_send(peer, fileSize, requestID);
 			recv(peer, dataBuffer, dataBufferSize, 0);
 
 			do
@@ -158,12 +157,8 @@ void Client::sendFile(SOCKET& peer)
 
 				if (inFile.gcount() > 0)
 				{
-					int status = send(peer, fileBuffer, inFile.gcount(), 0);
-					if (status == -1 || status == 0)
-					{
-						std::cout << "Can't send the data(" << WSAGetLastError() << ")\n";
-						break;
-					}
+					std::string fileData = std::string(fileBuffer, inFile.gcount());
+					_send(peer, fileData, requestID);
 					recv(peer, dataBuffer, dataBufferSize, 0); //confirmation from peer that the data has been received
 				}
 			} while (inFile.gcount() > 0);
@@ -171,7 +166,7 @@ void Client::sendFile(SOCKET& peer)
 		else
 		{
 			std::cout << "Failed to open file '" << fileName << "'\n";
-			send(peer, s_fileNotAvailable, statusSize, 0);
+			_send(peer, s_fileNotAvailable, requestID);
 		}
 
 		inFile.close();
@@ -184,7 +179,7 @@ void Client::sendFile(SOCKET& peer)
 	}
 }
 
-bool Client::downloadFile(SOCKET& peer, std::string fileName)
+bool Client::downloadFile(SOCKET& peer, std::string fileName, std::string& requestID)
 {
 	bool status = false;
 
@@ -196,8 +191,8 @@ bool Client::downloadFile(SOCKET& peer, std::string fileName)
 		setsockopt(peer, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout)); //sets timeout
 		setsockopt(peer, SOL_SOCKET, SO_SNDTIMEO, (char*)&timeout, sizeof(timeout));
 
-		if (requestFile(peer, fileName))
-			status = recvFile(peer, fileName);
+		if (requestFile(peer, fileName, requestID))
+			status = recvFile(peer, fileName, requestID);
 
 		timeout = 0;
 		setsockopt(peer, SOL_SOCKET, SO_RCVTIMEO, (char*)&timeout, sizeof(timeout)); //sets timeout
@@ -209,20 +204,29 @@ bool Client::downloadFile(SOCKET& peer, std::string fileName)
 	return status;
 }
 
-bool Client::requestFile(SOCKET& peer, std::string fileName)
+/*
+	adds header {id:number}-packetData
+*/
+void Client::_send(SOCKET& s, std::string& buf, std::string& requestID)
+{
+	buf.insert(0, "{" + *localID + ":" + requestID + "}-");
+	send(s, buf.c_str(), buf.length(), 0);
+}
+
+bool Client::requestFile(SOCKET& peer, std::string fileName, std::string& requestID)
 {
 	char recvBuffer[dataBufferSize];
 	memset(recvBuffer, 0, dataBufferSize);
-	send(peer, r_downloadFile, requestSize, 0);
+	_send(peer, r_downloadFile, requestID);
 	recv(peer, recvBuffer, dataBufferSize, 0); //confirmation that the request has been received
-	send(peer, fileName.c_str(), fileName.length(), 0);
+	_send(peer, fileName, requestID);
 	recv(peer, recvBuffer, requestSize, 0);//file available/not avaliable
 	if(std::string(recvBuffer, requestSize) == s_fileAvailable)
 		return true;
 	return false;
 }
 
-bool Client::recvFile(SOCKET& peer, std::string fileRequested)
+bool Client::recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID)
 {
 	int bytesReceived;
 	char fileBuffer[fileBufferSize];
@@ -231,10 +235,10 @@ bool Client::recvFile(SOCKET& peer, std::string fileRequested)
 	memset(sizeRecvBuffer, 0, dataBufferSize);
 
 	std::ofstream outFile(downloadDir + fileRequested, std::ios::binary | std::ios::trunc);
-	send(peer, r_getFileSize, requestSize, 0);
+	_send(peer, r_getFileSize, requestID);
 	bytesReceived = recv(peer, sizeRecvBuffer, sizeof(sizeRecvBuffer), 0);
 	uint64_t fileSize = std::stoull(std::string(sizeRecvBuffer, bytesReceived));
-	send(peer, s_readyToReceive, statusSize, 0);
+	_send(peer, s_readyToReceive, requestID);
 
 	if (outFile.is_open())
 	{
@@ -250,7 +254,7 @@ bool Client::recvFile(SOCKET& peer, std::string fileRequested)
 				break;
 			}
 			outFile.write(fileBuffer, bytesReceived);
-			send(peer, s_receivedData, statusSize, 0);
+			_send(peer, s_receivedData, requestID);
 			totalDownloaded += bytesReceived;
 		} while (totalDownloaded < fileSize);
 
@@ -262,7 +266,7 @@ bool Client::recvFile(SOCKET& peer, std::string fileRequested)
 	return false;
 }
 
-bool Client::getDirectoryContent(PeerInfo& peer)
+bool Client::getDirectoryContent(PeerInfo& peer, std::string& requestID)
 {
 	peer.files.clear();
 	setSocketMode(peer.peerSock, mode_blocking);
@@ -270,24 +274,24 @@ bool Client::getDirectoryContent(PeerInfo& peer)
 	char dataBuffer[dataBufferSize];
 	int bytesReceived = 0;
 
-	send(peer.peerSock, r_getDirectoryContent, requestSize, 0);
+	_send(peer.peerSock, r_getDirectoryContent, requestID);
 	bytesReceived = recv(peer.peerSock, dataBuffer, dataBufferSize, 0);
 
 	if (std::string(dataBuffer, bytesReceived) == s_receivedRequest)
 	{
-		send(peer.peerSock, s_readyToReceive, statusSize, 0);
+		_send(peer.peerSock, s_readyToReceive, requestID);
 		FileInfo file;
 		bytesReceived = recv(peer.peerSock, dataBuffer, dataBufferSize, 0);
 		while (std::string(dataBuffer, statusSize) == s_nextMetaFile)
 		{
-			send(peer.peerSock, s_receivedData, statusSize, 0);
+			_send(peer.peerSock, s_receivedData, requestID);
 			bytesReceived = recv(peer.peerSock, dataBuffer, dataBufferSize, 0);
 			file.fileName = std::string(dataBuffer, bytesReceived);
-			send(peer.peerSock, s_receivedData, statusSize, 0);
+			_send(peer.peerSock, s_receivedData, requestID);
 			bytesReceived = recv(peer.peerSock, dataBuffer, dataBufferSize, 0);
 			file.fileSize = std::stoull(std::string(dataBuffer, bytesReceived));
 			peer.files.push_back(file);
-			send(peer.peerSock, s_receivedData, statusSize, 0);
+			_send(peer.peerSock, s_receivedData, requestID);
 			recv(peer.peerSock, dataBuffer, dataBufferSize, 0);
 		}
 
@@ -301,7 +305,7 @@ bool Client::getDirectoryContent(PeerInfo& peer)
 	return false;
 }
 
-void Client::sendDirectoryContent(SOCKET& peer)
+void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID)
 {
 	if (peer != INVALID_SOCKET)
 	{
@@ -310,7 +314,7 @@ void Client::sendDirectoryContent(SOCKET& peer)
 		char dataBuffer[dataBufferSize];
 		int bytesReceived = 0;
 
-		send(peer, s_receivedRequest, statusSize, 0);
+		_send(peer, s_receivedRequest, requestID);
 		bytesReceived = recv(peer, dataBuffer, dataBufferSize, 0);
 
 		if (std::string(dataBuffer, bytesReceived) == s_readyToReceive)
@@ -318,21 +322,21 @@ void Client::sendDirectoryContent(SOCKET& peer)
 			for (auto& entry : std::filesystem::directory_iterator(sharedDir))
 			{
 				std::string path = entry.path().string();
-				std::string filename = path.substr(path.rfind("\\") + 1, path.size() - path.rfind("\\"));
+				std::string fileName = path.substr(path.rfind("\\") + 1, path.size() - path.rfind("\\"));
 				std::string fileSize = std::to_string(entry.file_size());
-				send(peer, s_nextMetaFile, statusSize, 0);
+				_send(peer, s_nextMetaFile, requestID);
 				recv(peer, dataBuffer, dataBufferSize, 0);
-				send(peer, filename.c_str(), filename.length(), 0);
+				_send(peer, fileName, requestID);
 				recv(peer, dataBuffer, dataBufferSize, 0);
-				send(peer, fileSize.c_str(), fileSize.length(), 0);
+				_send(peer, fileSize, requestID);
 				recv(peer, dataBuffer, dataBufferSize, 0);
 			}
 
-			send(peer, s_endMetaFile, statusSize, 0);
+			_send(peer, s_endMetaFile, requestID);
 		}
 		else
 		{
-			send(peer, s_endMetaFile, statusSize, 0);
+			_send(peer, s_endMetaFile, requestID);
 		}
 
 		setSocketMode(peer, mode_nonblocking);
@@ -349,7 +353,7 @@ int64_t Client::getFileSize(std::ifstream& file)
 
 void* Client::mapRequestHandlerFunction(std::string request)
 {
-	void(__thiscall Client:: * function)(SOCKET & peer) = nullptr;
+	void(__thiscall Client:: * function)(SOCKET & peer, std::string& requestID) = nullptr;
 
 	if (request == r_downloadFile)
 		function = &Client::sendFile;

@@ -1,14 +1,142 @@
 ﻿  app.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(55,14): error C2672: invoke: Nenašla se žádná odpovídající přetížená funkce.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(61): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(66): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int (__stdcall *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(89): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona void std::thread::_Start<_Ty,void**,SOCKET&,std::string&>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Ty=function *,
+              _Fn=function *
+          ]
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peerinfo.h(18): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona std::thread::thread<function*,void**,SOCKET&,std::string&,0>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Fn=function *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2893: Nepovedlo se specializovat šablonu funkcí unknown-type std::invoke(_Callable &&,_Ty1 &&,_Types2 &&...) noexcept(<expr>).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1589): message : viz deklarace: std::invoke
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : S následujícími argumenty šablony:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Callable=function *
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Ty1=void **
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Types2={unsigned int, std::basic_string<char,std::char_traits<char>,std::allocator<char>>}
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2780: unknown-type std::invoke(_Callable &&) noexcept(<expr>): očekává tento počet argumentů: 1; byl zadaný tento počet: 4.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1583): message : viz deklarace: std::invoke
   client.cpp
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(112,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(161,55): warning C4244: argument: std::streamsize se převádí na int; může dojít ke ztrátě dat.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(160,66): warning C4244: argument: std::streamsize se převádí na const unsigned int; může dojít ke ztrátě dat.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(55,14): error C2672: invoke: Nenašla se žádná odpovídající přetížená funkce.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(61): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(66): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int (__stdcall *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(89): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona void std::thread::_Start<_Ty,void**,SOCKET&,std::string&>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Ty=function *,
+              _Fn=function *
+          ]
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peerinfo.h(18): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona std::thread::thread<function*,void**,SOCKET&,std::string&,0>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Fn=function *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2893: Nepovedlo se specializovat šablonu funkcí unknown-type std::invoke(_Callable &&,_Ty1 &&,_Types2 &&...) noexcept(<expr>).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1589): message : viz deklarace: std::invoke
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : S následujícími argumenty šablony:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Callable=function *
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Ty1=void **
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Types2={unsigned int, std::basic_string<char,std::char_traits<char>,std::allocator<char>>}
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2780: unknown-type std::invoke(_Callable &&) noexcept(<expr>): očekává tento počet argumentů: 1; byl zadaný tento počet: 4.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1583): message : viz deklarace: std::invoke
   main.cpp
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\main.cpp(138,22): warning C4018: <: signed/unsigned – neshoda
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(55,14): error C2672: invoke: Nenašla se žádná odpovídající přetížená funkce.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(61): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(66): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int (__stdcall *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(89): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona void std::thread::_Start<_Ty,void**,SOCKET&,std::string&>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Ty=function *,
+              _Fn=function *
+          ]
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peerinfo.h(18): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona std::thread::thread<function*,void**,SOCKET&,std::string&,0>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Fn=function *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2893: Nepovedlo se specializovat šablonu funkcí unknown-type std::invoke(_Callable &&,_Ty1 &&,_Types2 &&...) noexcept(<expr>).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1589): message : viz deklarace: std::invoke
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : S následujícími argumenty šablony:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Callable=function *
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Ty1=void **
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Types2={unsigned int, std::basic_string<char,std::char_traits<char>,std::allocator<char>>}
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2780: unknown-type std::invoke(_Callable &&) noexcept(<expr>): očekává tento počet argumentů: 1; byl zadaný tento počet: 4.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1583): message : viz deklarace: std::invoke
   peer.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(34,29): warning C4309: argument: zkrácení konstantní hodnoty
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(45,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(8,12): warning C4244: argument: time_t se převádí na unsigned int; může dojít ke ztrátě dat.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(47,29): warning C4309: argument: zkrácení konstantní hodnoty
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(58,20): warning C4018: <: signed/unsigned – neshoda
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(55,14): error C2672: invoke: Nenašla se žádná odpovídající přetížená funkce.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(61): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(66): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int (__stdcall *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(89): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona void std::thread::_Start<_Ty,void**,SOCKET&,std::string&>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Ty=function *,
+              _Fn=function *
+          ]
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peerinfo.h(18): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona std::thread::thread<function*,void**,SOCKET&,std::string&,0>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Fn=function *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2893: Nepovedlo se specializovat šablonu funkcí unknown-type std::invoke(_Callable &&,_Ty1 &&,_Types2 &&...) noexcept(<expr>).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1589): message : viz deklarace: std::invoke
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : S následujícími argumenty šablony:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Callable=function *
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Ty1=void **
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Types2={unsigned int, std::basic_string<char,std::char_traits<char>,std::allocator<char>>}
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2780: unknown-type std::invoke(_Callable &&) noexcept(<expr>): očekává tento počet argumentů: 1; byl zadaný tento počet: 4.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1583): message : viz deklarace: std::invoke
   server.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(55,14): error C2672: invoke: Nenašla se žádná odpovídající přetížená funkce.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(61): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int std::thread::_Invoke<_Tuple,0,1,2,3>(void *) noexcept
+          with
+          [
+              _Tuple=_Tuple
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(66): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona unsigned int (__stdcall *std::thread::_Get_invoke<_Tuple,0,1,2,3>(std::integer_sequence<size_t,0,1,2,3>) noexcept)(void *) noexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(89): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona void std::thread::_Start<_Ty,void**,SOCKET&,std::string&>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Ty=function *,
+              _Fn=function *
+          ]
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peerinfo.h(18): message : Zobrazit odkaz na kompilované vytváření instancí funkce šablona std::thread::thread<function*,void**,SOCKET&,std::string&,0>(_Fn &&,void **&&,SOCKET &,std::string &)
+          with
+          [
+              _Fn=function *
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2893: Nepovedlo se specializovat šablonu funkcí unknown-type std::invoke(_Callable &&,_Ty1 &&,_Types2 &&...) noexcept(<expr>).
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1589): message : viz deklarace: std::invoke
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : S následujícími argumenty šablony:
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Callable=function *
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Ty1=void **
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): message : _Types2={unsigned int, std::basic_string<char,std::char_traits<char>,std::allocator<char>>}
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\thread(51,5): error C2780: unknown-type std::invoke(_Callable &&) noexcept(<expr>): očekává tento počet argumentů: 1; byl zadaný tento počet: 4.
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\type_traits(1583): message : viz deklarace: std::invoke
   Generování kódu...
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(359): warning C4172: Vrací adresu lokální proměnné nebo dočasné: function.
-  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
-  FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

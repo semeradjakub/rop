@@ -12,10 +12,6 @@
 #include "fileinfo.h"
 #include "globals.h"
 
-typedef const char* status;
-typedef const char* request;
-typedef const char* message;
-
 class Client
 {
 public:
@@ -25,15 +21,14 @@ public:
 
 	PeerInfo* Connect(std::string& ip, short port);
 	bool Disconnect(std::string& ip); 
-	bool downloadFile(SOCKET& peer, std::string fileName); 
-	bool getDirectoryContent(PeerInfo& peer);
-
+	bool downloadFile(SOCKET& peer, std::string fileName, std::string& requestID); 
+	bool getDirectoryContent(PeerInfo& peer, std::string& requestID);
 	
 private:
-	bool requestFile(SOCKET& peer, std::string fileName); 
-	bool recvFile(SOCKET& peer, std::string fileRequested);
-	void sendFile(SOCKET& peer);
-	void sendDirectoryContent(SOCKET& peer);
+	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID); 
+	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID);
+	void sendFile(SOCKET& peer, std::string& requestID);
+	void sendDirectoryContent(SOCKET& peer, std::string& requestID);
 
 private:
 	//core
@@ -46,6 +41,7 @@ private:
 	void setSocketMode(SOCKET& sock, u_long& mode);
 	int64_t getFileSize(std::ifstream& file);
 	void* mapRequestHandlerFunction(std::string request);
+	void _send(SOCKET& s, std::string& buf, std::string& requestID);
 	u_long mode_blocking = 0;
 	u_long mode_nonblocking = 1;
 

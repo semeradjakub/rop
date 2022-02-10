@@ -5,7 +5,7 @@
 #include "globals.h"
 
 /*
-* Interface for GUI(main class)
+ Interface for GUI(main class)
 */
 class Peer
 {
@@ -21,6 +21,8 @@ public:
 	PeerInfo* GetPeerById(std::string& id);
 	void setID(std::string localID);
 	std::string getID();
+
+	std::string generateRandomId(int length);
 
 	std::vector<PeerInfo>& getPeerList();
 

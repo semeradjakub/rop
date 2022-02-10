@@ -5,6 +5,7 @@ Peer::Peer(std::string ip)
 	WSAStartup(version, &wsaData);
 	client = new Client(&peers, &localID);
 	server = new Server(&peers, &localID);
+	srand(time(0));
 }
 
 Peer::~Peer()
@@ -19,14 +20,26 @@ bool Peer::start()
 	return (server->start() && client->start());
 }
 
+std::string Peer::generateRandomId(int length)
+{
+	std::string id = "";
+	for (int i = 0; i < length; i++)
+		id += (char)('a' + rand() % ('z' - 'a' - 1));
+	return id;
+}
+
 bool Peer::DownloadFile(SOCKET& from, std::string fileName, uint8_t flags)
 {
-	return client->downloadFile(from, fileName);
+	std::string requestID = generateRandomId(16);
+	client->downloadFile(from, fileName, requestID);
+	return true;
 }
 
 bool Peer::GetPeerDirectoryContent(PeerInfo& peer)
 {
-	return client->getDirectoryContent(peer);
+	std::string requestID = generateRandomId(16);
+	client->getDirectoryContent(peer, requestID);
+	return true;
 }
 
 PeerInfo* Peer::Connect(std::string& ip)

@@ -69,7 +69,7 @@ void Server::acceptConnections()
 		recv(newPeerSock, data, dataBufferSize, 0);
 		if (std::string(data, messageSize) == m_connect)
 		{
-			send(newPeerSock, m_welcome, messageSize, 0);
+			send(newPeerSock, m_welcome.c_str(), messageSize, 0);
 			bytesReceived = recv(newPeerSock, data, dataBufferSize, 0);
 			send(newPeerSock, localID->c_str(), localID->length(), 0);
 			if (bytesReceived > 0)

@@ -5,22 +5,24 @@
 #include <queue>
 #include "fileinfo.h"
 
-typedef void (*function)(SOCKET &peer);
+typedef void(__thiscall* function)(SOCKET& peer, std::string& requestID);
 
 struct Worker
 {
 
-	Worker(function handler, SOCKET& socket)
+	Worker(function handler, SOCKET& socket, std::string& requestID, void* caller)
 	{
 		if (handler != nullptr)
 		{
 			std::cout << "thread spawn\n";
+			thread = std::thread(&handler, &caller, socket, requestID); //problem creating thread
 		}
 	}
 
 	~Worker()
 	{
-
+		thread.join();
+		std::cout << "thread destroyed\n";
 	}
 
 	std::queue<std::string> receiveBuffer;

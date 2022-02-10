@@ -8,8 +8,6 @@
 #include "peerinfo.h"
 #include "globals.h"
 
-typedef const char* message;
-
 class Server
 {
 public:
