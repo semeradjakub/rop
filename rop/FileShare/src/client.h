@@ -27,8 +27,8 @@ public:
 private:
 	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID); 
 	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID);
-	void sendFile(SOCKET& peer, std::string& requestID);
-	void sendDirectoryContent(SOCKET& peer, std::string& requestID);
+	void sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
+	void sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
 
 private:
 	//core
@@ -38,12 +38,13 @@ private:
 
 private:
 	//utility
-	void setSocketMode(SOCKET& sock, u_long& mode);
-	int64_t getFileSize(std::ifstream& file);
-	void* mapRequestHandlerFunction(std::string request);
-	void _send(SOCKET& s, std::string& buf, std::string& requestID);
 	u_long mode_blocking = 0;
 	u_long mode_nonblocking = 1;
+	void setSocketMode(SOCKET& sock, u_long& mode);
+	int64_t getFileSize(std::ifstream& file);
+	std::thread createRequestThread(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
+	void _send(SOCKET& s, std::string& buf, std::string& requestID);
+	std::string getResponse(std::vector<std::string>& vec);
 
 private:
 	//control
@@ -83,5 +84,4 @@ private:
 	request r_getFileSize = "\x72\x67\x66\x73";
 	request r_sendFile = "\x72\x73\x65\x66";
 	request r_downloadFile = "\x72\x64\x77\x66";
-
 };

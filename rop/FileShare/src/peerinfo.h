@@ -5,28 +5,17 @@
 #include <queue>
 #include "fileinfo.h"
 
-typedef void(__thiscall* function)(SOCKET& peer, std::string& requestID);
-
-struct Worker
+struct NetThreadManager
 {
-
-	Worker(function handler, SOCKET& socket, std::string& requestID, void* caller)
+	struct Worker
 	{
-		if (handler != nullptr)
-		{
-			std::cout << "thread spawn\n";
-			thread = std::thread(&handler, &caller, socket, requestID); //problem creating thread
-		}
-	}
-
-	~Worker()
-	{
-		thread.join();
-		std::cout << "thread destroyed\n";
-	}
-
-	std::queue<std::string> receiveBuffer;
-	std::thread thread;
+		//receive buffer
+		std::vector<std::string> buffer;
+		//running thread
+		std::thread thread;
+	};
+	
+	std::map<std::string, Worker*> workers;
 };
 
 struct PeerInfo
@@ -37,5 +26,5 @@ struct PeerInfo
 	std::string id = "";
 	std::vector<FileInfo> files;
 
-	std::map<std::string, Worker*> workers;
+	NetThreadManager threadManager;
 };

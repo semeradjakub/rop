@@ -20,7 +20,7 @@ Server::~Server()
 }
 
 /*
-* creates server thread
+ creates server thread
 */
 bool Server::start()
 {
@@ -43,7 +43,7 @@ void Server::run()
 }
 
 /*
-* Accepts ingress connections and store these connections in peers list
+ Accepts ingress connections and store these connections in peers list
 */
 void Server::acceptConnections()
 {
