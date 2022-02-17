@@ -85,16 +85,11 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 
 	localpeer.setID(id);
 	std::cout << "ID: " << localpeer.getID() << std::endl;
-
-	running = true;
-	reqThread = std::thread(&Main::processRequests, this);
 }
 
 
 Main::~Main()
 {
-	running = false;
-	reqThread.join();
 	//Disconnect events
 	m_peerListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(Main::onPeerSelect), NULL, this);
 	m_connectBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::connectToPeer), NULL, this);
@@ -114,14 +109,6 @@ void Main::onClose(wxCloseEvent& evt)
 	}
 
 	Destroy();
-}
-
-void Main::processRequests()
-{
-	while (running)
-	{
-
-	}
 }
 
 void Main::showUserSettings(wxCommandEvent& event)

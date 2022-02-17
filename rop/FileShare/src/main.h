@@ -37,11 +37,6 @@ private:
 	void onClose(wxCloseEvent& evt);
 
 private:
-	std::thread reqThread;
-	bool running = false;
-	void processRequests();
-
-private:
 	wxBoxSizer* mainSizerV;
 
 protected:

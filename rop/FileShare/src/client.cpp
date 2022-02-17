@@ -53,6 +53,7 @@ void Client::run()
 					{
 						peers->at(i).threadManager.workers[requestID]->buffer.push_back(dataReceived);
 						std::cout << "Received data for existing id(" << requestID << ")\n";
+						std::cout << dataReceived << std::endl;
 					}
 					else
 					{
@@ -138,9 +139,9 @@ bool Client::downloadFile(SOCKET& peer, std::string fileName, std::string& reque
 }
 
 /*
-	adds header {id:number}-packetData
+	adds header {id:number}-originalData
 */
-void Client::_send(SOCKET& s, std::string& buf, std::string& requestID)
+void Client::_send(SOCKET& s, std::string buf, std::string& requestID)
 {
 	buf.insert(0, "{" + *localID + ":" + requestID + "}-");
 	send(s, buf.c_str(), buf.length(), 0);
@@ -279,7 +280,7 @@ bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vec
 	{
 		target.AppendString(wxString(peer.files.at(i).fileName + ":(" + std::to_string(peer.files.at(i).fileSize) + " Bytes)"));
 	}
-
+	std::cout << "finished\n";
 	return true;
 }
 
@@ -315,6 +316,8 @@ void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vec
 		}
 
 	}
+
+	std::cout << "finished\n";
 }
 
 int64_t Client::getFileSize(std::ifstream& file)
@@ -349,7 +352,7 @@ std::thread Client::createRequestThread(PeerInfo& peer, std::string func, std::s
 
 std::string Client::getResponse(std::vector<std::string>& vec)
 {
-	while (!vec.size()) { Sleep(5); }
+	while (!vec.size()) { Sleep(1); }
 	std::string res = vec.at(0);
 	vec.erase(vec.begin());
 	return res;

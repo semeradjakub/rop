@@ -45,7 +45,7 @@ private:
 	void setSocketMode(SOCKET& sock, u_long& mode);
 	int64_t getFileSize(std::ifstream& file);
 	std::thread createRequestThread(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
-	void _send(SOCKET& s, std::string& buf, std::string& requestID);
+	void _send(SOCKET& s, std::string buf, std::string& requestID);
 	std::string getResponse(std::vector<std::string>& vec);
 
 public:
