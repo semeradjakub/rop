@@ -147,11 +147,7 @@ void Main::onPeerSelect(wxCommandEvent& event)
 
 	if (peer)
 	{
-		localpeer.GetPeerDirectoryContent(*peer);
-			//for (int i = 0; i < peer->files.size(); i++)
-				//m_fileListBox->AppendString(wxString(peer->files.at(i).fileName + ":(" + std::to_string(peer->files.at(i).fileSize) + " Bytes)"));
-		//else
-			//wxMessageBox("Failed to get files", "Error");
+		localpeer.GetPeerDirectoryContent(*peer, *m_fileListBox);
 	}
 	else
 		wxMessageBox("Failed to get files", "Error");

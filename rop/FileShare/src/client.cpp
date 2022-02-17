@@ -244,12 +244,11 @@ void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::str
 	}
 }
 
-bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer)
+bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox& target)
 {
 	try
 	{
 		peer.files.clear();
-
 		char dataBuffer[dataBufferSize];
 		int bytesReceived = 0;
 
@@ -269,16 +268,19 @@ bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vec
 				peer.files.push_back(file);
 				_send(peer.peerSock, s_receivedData, requestID);
 			}
-
-			return true;
 		}
-
-		return false;
 	}
 	catch (std::exception e)
 	{
 		std::cout << e.what() << std::endl;
 	}
+
+	for (int i = 0; i < peer.files.size(); i++)
+	{
+		target.AppendString(wxString(peer.files.at(i).fileName + ":(" + std::to_string(peer.files.at(i).fileSize) + " Bytes)"));
+	}
+
+	return true;
 }
 
 void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer)
@@ -333,11 +335,11 @@ std::thread Client::createRequestThread(std::string request, SOCKET& peerSock, s
 
 }
 
-std::thread Client::createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec)
+std::thread Client::createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox& targetListBox)
 {
 	if (func == "dir")
 	{
-		return std::thread(&Client::getDirectoryContent, this, std::ref(peer), requestID, std::ref(responseVec));
+		return std::thread(&Client::getDirectoryContent, this, std::ref(peer), requestID, std::ref(responseVec), std::ref(targetListBox));
 	}
 	else if (func == "file")
 	{

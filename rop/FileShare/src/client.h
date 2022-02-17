@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_WARNINGS
 #include <winsock.h>
 #include <Windows.h>
 #include <iostream>
@@ -8,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <filesystem>
+#include <wx/listbox.h>
 #include "peerinfo.h"
 #include "fileinfo.h"
 #include "globals.h"
@@ -22,7 +24,7 @@ public:
 	PeerInfo* Connect(std::string& ip, short port);
 	bool Disconnect(std::string& ip); 
 	bool downloadFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
-	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer);
+	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox& target);
 	
 private:
 	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
@@ -47,7 +49,7 @@ private:
 	std::string getResponse(std::vector<std::string>& vec);
 
 public:
-	std::thread createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec);
+	std::thread createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox& targetListBox);
 
 private:
 	//control

@@ -35,11 +35,11 @@ bool Peer::DownloadFile(SOCKET& from, std::string fileName)
 	return true;
 }
 
-bool Peer::GetPeerDirectoryContent(PeerInfo& peer)
+bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox& target)
 {
 	std::string requestID = generateRandomId(16);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
-	peer.threadManager.workers[requestID]->thread = client->createRequestThread(peer, "dir", requestID, "", peer.threadManager.workers[requestID]->buffer);
+	peer.threadManager.workers[requestID]->thread = client->createRequestThread(peer, "dir", requestID, "", peer.threadManager.workers[requestID]->buffer, target);
 	return true;
 }
 
