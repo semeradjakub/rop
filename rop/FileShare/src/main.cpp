@@ -85,11 +85,16 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 
 	localpeer.setID(id);
 	std::cout << "ID: " << localpeer.getID() << std::endl;
+
+	running = true;
+	reqThread = std::thread(&Main::processRequests, this);
 }
 
 
 Main::~Main()
 {
+	running = false;
+	reqThread.join();
 	//Disconnect events
 	m_peerListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(Main::onPeerSelect), NULL, this);
 	m_connectBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::connectToPeer), NULL, this);
@@ -109,6 +114,14 @@ void Main::onClose(wxCloseEvent& evt)
 	}
 
 	Destroy();
+}
+
+void Main::processRequests()
+{
+	while (running)
+	{
+
+	}
 }
 
 void Main::showUserSettings(wxCommandEvent& event)
@@ -131,14 +144,14 @@ void Main::onPeerSelect(wxCommandEvent& event)
 	int selectedPeer = m_peerListBox->GetSelection();
 	std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 	PeerInfo* peer = localpeer.GetPeerById(id);
-	
+
 	if (peer)
 	{
-		if (localpeer.GetPeerDirectoryContent(*peer))
-			for (int i = 0; i < peer->files.size(); i++)
-				m_fileListBox->AppendString(wxString(peer->files.at(i).fileName + ":(" + std::to_string(peer->files.at(i).fileSize) + " Bytes)"));
-		else
-			wxMessageBox("Failed to get files", "Error");
+		localpeer.GetPeerDirectoryContent(*peer);
+			//for (int i = 0; i < peer->files.size(); i++)
+				//m_fileListBox->AppendString(wxString(peer->files.at(i).fileName + ":(" + std::to_string(peer->files.at(i).fileSize) + " Bytes)"));
+		//else
+			//wxMessageBox("Failed to get files", "Error");
 	}
 	else
 		wxMessageBox("Failed to get files", "Error");
@@ -152,10 +165,12 @@ void Main::onPeerFileDClick(wxCommandEvent& event)
 	std::string fileName = m_fileListBox->GetString(m_fileListBox->GetSelection()).ToStdString();
 	fileName = fileName.substr(0, fileName.rfind(":"));
 
+	/*peer.threadManager.workers[]
+
 	if (localpeer.DownloadFile(peer.peerSock, fileName, 0))
 		wxMessageBox("File downloaded!", "Message");
 	else
-		wxMessageBox("Failed to download file!", "Error");
+		wxMessageBox("Failed to download file!", "Error");*/
 }
 
 void Main::connectToPeer(wxCommandEvent& event)

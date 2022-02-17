@@ -1,7 +1,17 @@
-﻿  client.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(113,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(242,66): warning C4244: argument: std::streamsize se převádí na const unsigned int; může dojít ke ztrátě dat.
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(219,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(296,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(342): warning C4715: Client::createRequestThread: ne všechny cesty k ovládacím prvkům vrací hodnotu
+﻿  app.cpp
+  client.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(114,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(231,66): warning C4244: argument: std::streamsize se převádí na const unsigned int; může dojít ke ztrátě dat.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(208,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(253,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(288,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+  main.cpp
+  peer.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(8,12): warning C4244: argument: time_t se převádí na unsigned int; může dojít ke ztrátě dat.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(48,29): warning C4309: argument: zkrácení konstantní hodnoty
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(59,20): warning C4018: <: signed/unsigned – neshoda
+  Generování kódu...
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(282): warning C4715: Client::getDirectoryContent: ne všechny cesty k ovládacím prvkům vrací hodnotu
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(334): warning C4715: Client::createRequestThread: ne všechny cesty k ovládacím prvkům vrací hodnotu
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(346): warning C4715: Client::createRequestThread: ne všechny cesty k ovládacím prvkům vrací hodnotu
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

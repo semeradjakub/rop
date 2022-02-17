@@ -14,7 +14,7 @@ public:
 	~Peer();
 	bool start();
 
-	bool DownloadFile(SOCKET& from, std::string fileName, uint8_t flags);
+	bool DownloadFile(SOCKET& from, std::string fileName);
 	bool GetPeerDirectoryContent(PeerInfo& peer);
 	PeerInfo* Connect(std::string& ip);
 	bool Disconnect(std::string& ip);

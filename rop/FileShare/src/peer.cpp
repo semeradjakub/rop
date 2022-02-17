@@ -28,23 +28,24 @@ std::string Peer::generateRandomId(int length)
 	return id;
 }
 
-bool Peer::DownloadFile(SOCKET& from, std::string fileName, uint8_t flags)
+bool Peer::DownloadFile(SOCKET& from, std::string fileName)
 {
-	std::string requestID = generateRandomId(16);
-	client->downloadFile(from, fileName, requestID);
+	//std::string requestID = generateRandomId(16);
+	//client->downloadFile(from, fileName, requestID, responseBuffer);
 	return true;
 }
 
 bool Peer::GetPeerDirectoryContent(PeerInfo& peer)
 {
 	std::string requestID = generateRandomId(16);
-	client->getDirectoryContent(peer, requestID);
+	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
+	peer.threadManager.workers[requestID]->thread = client->createRequestThread(peer, "dir", requestID, "", peer.threadManager.workers[requestID]->buffer);
 	return true;
 }
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55667);
+	return client->Connect(ip, 55666);
 }
 
 bool Peer::Disconnect(std::string& ip)

@@ -2,7 +2,6 @@
 #include "wx/wx.h"
 #include "peer.h"
 #include <thread>
-
 #include <wx/artprov.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/sizer.h>
@@ -36,6 +35,11 @@ public:
 
 private:
 	void onClose(wxCloseEvent& evt);
+
+private:
+	std::thread reqThread;
+	bool running = false;
+	void processRequests();
 
 private:
 	wxBoxSizer* mainSizerV;

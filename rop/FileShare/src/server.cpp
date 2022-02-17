@@ -36,6 +36,7 @@ void Server::run()
 {
 	while (running)
 	{
+		Sleep(1);
 		//if access is allowed, accept incoming connections
 		if(newConnectionsAccepted)
 			acceptConnections();

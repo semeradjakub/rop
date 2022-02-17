@@ -21,12 +21,12 @@ public:
 
 	PeerInfo* Connect(std::string& ip, short port);
 	bool Disconnect(std::string& ip); 
-	bool downloadFile(SOCKET& peer, std::string fileName, std::string& requestID); 
-	bool getDirectoryContent(PeerInfo& peer, std::string& requestID);
+	bool downloadFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
+	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer);
 	
 private:
-	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID); 
-	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID);
+	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
+	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID, std::vector<std::string>& responseBuffer);
 	void sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
 	void sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
 
@@ -45,6 +45,9 @@ private:
 	std::thread createRequestThread(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
 	void _send(SOCKET& s, std::string& buf, std::string& requestID);
 	std::string getResponse(std::vector<std::string>& vec);
+
+public:
+	std::thread createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec);
 
 private:
 	//control
