@@ -23,8 +23,8 @@ public:
 
 	PeerInfo* Connect(std::string& ip, short port);
 	bool Disconnect(std::string& ip); 
-	bool downloadFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
-	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox& target);
+	bool downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer);
+	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target);
 	
 private:
 	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
@@ -44,12 +44,12 @@ private:
 	u_long mode_nonblocking = 1;
 	void setSocketMode(SOCKET& sock, u_long& mode);
 	int64_t getFileSize(std::ifstream& file);
-	std::thread createRequestThread(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
+	std::thread createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
 	void _send(SOCKET& s, std::string buf, std::string& requestID);
 	std::string getResponse(std::vector<std::string>& vec);
 
 public:
-	std::thread createRequestThread(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox& targetListBox);
+	std::thread createRequestThreadClient(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox* targetListBox);
 
 private:
 	//control
@@ -62,7 +62,7 @@ private:
 
 private:
 	static const int fileBufferSize = 1024;
-	static const int dataBufferSize = 256;
+	static const int dataBufferSize = 1024;
 	static const int requestSize = 4;
 	static const int statusSize = 4;
 	static const int messageSize = 4;

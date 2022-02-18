@@ -134,26 +134,22 @@ void Main::onPeerSelect(wxCommandEvent& event)
 
 	if (peer)
 	{
-		localpeer.GetPeerDirectoryContent(*peer, *m_fileListBox);
+		localpeer.GetPeerDirectoryContent(*peer, m_fileListBox);
 	}
-	else
-		wxMessageBox("Failed to get files", "Error");
 }
 
 void Main::onPeerFileDClick(wxCommandEvent& event)
 {
 	int selectedPeer = m_peerListBox->GetSelection();
 	std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
-	PeerInfo& peer = *localpeer.GetPeerById(id);
+	PeerInfo* peer = localpeer.GetPeerById(id);
 	std::string fileName = m_fileListBox->GetString(m_fileListBox->GetSelection()).ToStdString();
 	fileName = fileName.substr(0, fileName.rfind(":"));
 
-	/*peer.threadManager.workers[]
-
-	if (localpeer.DownloadFile(peer.peerSock, fileName, 0))
-		wxMessageBox("File downloaded!", "Message");
-	else
-		wxMessageBox("Failed to download file!", "Error");*/
+	if (peer)
+	{
+		localpeer.DownloadFile(*peer, fileName);
+	}
 }
 
 void Main::connectToPeer(wxCommandEvent& event)

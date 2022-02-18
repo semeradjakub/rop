@@ -28,24 +28,26 @@ std::string Peer::generateRandomId(int length)
 	return id;
 }
 
-bool Peer::DownloadFile(SOCKET& from, std::string fileName)
+bool Peer::DownloadFile(PeerInfo& peer, std::string fileName)
 {
-	//std::string requestID = generateRandomId(16);
+	std::string requestID = generateRandomId(16);
 	//client->downloadFile(from, fileName, requestID, responseBuffer);
+	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
+	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "file_download", requestID, fileName, peer.threadManager.workers[requestID]->buffer, nullptr);
 	return true;
 }
 
-bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox& target)
+bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target)
 {
 	std::string requestID = generateRandomId(16);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
-	peer.threadManager.workers[requestID]->thread = client->createRequestThread(peer, "dir", requestID, "", peer.threadManager.workers[requestID]->buffer, target);
+	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "directory_get", requestID, "", peer.threadManager.workers[requestID]->buffer, target);
 	return true;
 }
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55667);
+	return client->Connect(ip, 55666);
 }
 
 bool Peer::Disconnect(std::string& ip)

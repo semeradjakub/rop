@@ -15,8 +15,8 @@ public:
 	~Peer();
 	bool start();
 
-	bool DownloadFile(SOCKET& from, std::string fileName);
-	bool GetPeerDirectoryContent(PeerInfo& peer, wxListBox& target);
+	bool DownloadFile(PeerInfo& peer, std::string fileName);
+	bool GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target);
 	PeerInfo* Connect(std::string& ip);
 	bool Disconnect(std::string& ip);
 	PeerInfo* GetPeerById(std::string& id);
