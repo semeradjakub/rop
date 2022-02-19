@@ -79,7 +79,6 @@ void Server::acceptConnections()
 			newPeer.peerSock = newPeerSock;
 			u_long nonblocking = 1;
 			ioctlsocket(newPeer.peerSock, FIONBIO, &nonblocking);
-			newPeer.available = true;
 			peers->push_back(newPeer);
 		}
 	}

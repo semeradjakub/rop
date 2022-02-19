@@ -47,7 +47,7 @@ bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target)
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55666);
+	return client->Connect(ip, 55667);
 }
 
 bool Peer::Disconnect(std::string& ip)

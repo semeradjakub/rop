@@ -13,6 +13,7 @@ struct NetThreadManager
 		std::vector<std::string> buffer;
 		//running thread
 		std::thread thread;
+		bool finished = true;
 	};
 	
 	std::map<std::string, Worker*> workers;
@@ -20,7 +21,6 @@ struct NetThreadManager
 
 struct PeerInfo
 {
-	bool available = true;
 	SOCKET peerSock;
 	sockaddr_in peerHint;
 	std::string id = "";

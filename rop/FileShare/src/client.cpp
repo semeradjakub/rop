@@ -101,7 +101,6 @@ PeerInfo* Client::Connect(std::string& ip, short port)
 			bytesReceived = recv(peer.peerSock, data, dataBufferSize, 0);
 			if (bytesReceived > 0)
 				peer.id = std::string(data, bytesReceived);
-			peer.available = true;
 			setSocketMode(peer.peerSock, mode_nonblocking);
 			peers->push_back(peer);
 			return &peers->at(peers->size() - 1);
@@ -206,10 +205,11 @@ void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::str
 		_send(peer, s_receivedRequest, requestID);
 
 		char dataBuffer[dataBufferSize];
-		char fileBuffer[fileBufferSize];
+		char fileBuffer[dataBufferSize];
 		std::string fileName = getResponse(responseBuffer);
 
 		std::ifstream inFile;
+		int prefixLength = localID->length() + requestID.length() + 4 + 1;
 
 		inFile.open(sharedDir + fileName, std::ios::binary);
 
@@ -224,7 +224,7 @@ void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::str
 
 			do
 			{
-				inFile.read(fileBuffer, fileBufferSize);
+				inFile.read(fileBuffer, dataBufferSize - prefixLength);
 
 				if (inFile.gcount() > 0)
 				{
@@ -347,4 +347,3 @@ std::string Client::getResponse(std::vector<std::string>& vec)
 	vec.erase(vec.begin());
 	return res;
 }
-

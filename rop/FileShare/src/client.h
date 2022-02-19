@@ -46,6 +46,7 @@ private:
 	int64_t getFileSize(std::ifstream& file);
 	std::thread createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
 	void _send(SOCKET& s, std::string buf, std::string& requestID);
+
 	std::string getResponse(std::vector<std::string>& vec);
 
 public:
@@ -61,7 +62,6 @@ private:
 	std::string downloadDir = "C:\\Users\\Jakub\\Desktop\\ROP\\download\\";
 
 private:
-	static const int fileBufferSize = 1024;
 	static const int dataBufferSize = 1024;
 	static const int requestSize = 4;
 	static const int statusSize = 4;
