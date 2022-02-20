@@ -172,7 +172,7 @@ void Main::disconnectFromPeer(wxCommandEvent& event)
 		std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 		std::string ip = inet_ntoa(localpeer.GetPeerById(id)->peerHint.sin_addr);
 		if (!localpeer.Disconnect(ip))
-			wxMessageBox("Failed to disconnect", "Error");
+			wxMessageBox("Client already disconnected", "Error");
 
 		m_peerListBox->Delete(selectedPeer);
 	}

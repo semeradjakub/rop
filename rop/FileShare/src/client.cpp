@@ -31,38 +31,41 @@ void Client::run()
 	
 	while (running)
 	{
-		//Sleep(1);
 		int peersSize = peers->size();
-		
+		std::cout << "num of peers: " << peersSize << std::endl;
 		for (int i = 0; i < peersSize; i++)
 		{
-			SOCKET& peerSock = peers->at(i).peerSock;
-			bytesReceived = recv(peerSock, receiveBuffer, dataBufferSize, 0);
-
-			if (bytesReceived > 0)
+			if (!peerArrayLocked)
 			{
-				receivedBuffer = std::string(receiveBuffer, bytesReceived);
-				//separate packet identificator and data - FORMAT: {[id]:[number]}-packetData
-				userID = receivedBuffer.substr(receivedBuffer.find("{") + 1, receivedBuffer.find(":") - receivedBuffer.find("{") - 1);
-				requestID = receivedBuffer.substr(receivedBuffer.find(":") + 1, receivedBuffer.find("}") - receivedBuffer.find(":") - 1);
-				dataReceived = receivedBuffer.substr(receivedBuffer.find("-") + 1, receivedBuffer.size() - receivedBuffer.find("-"));
+				SOCKET& peerSock = peers->at(i).peerSock;
+				bytesReceived = recv(peerSock, receiveBuffer, dataBufferSize, 0);
 
-				if (peers->at(i).id == userID)
+				if (bytesReceived > 0)
 				{
-					if (peers->at(i).threadManager.workers.find(requestID) != peers->at(i).threadManager.workers.end())
+					receivedBuffer = std::string(receiveBuffer, bytesReceived);
+					//separate packet identificator and data - FORMAT: {[id]:[number]}-packetData
+					userID = receivedBuffer.substr(receivedBuffer.find("{") + 1, receivedBuffer.find(":") - receivedBuffer.find("{") - 1);
+					requestID = receivedBuffer.substr(receivedBuffer.find(":") + 1, receivedBuffer.find("}") - receivedBuffer.find(":") - 1);
+					dataReceived = receivedBuffer.substr(receivedBuffer.find("-") + 1, receivedBuffer.size() - receivedBuffer.find("-"));
+
+					if (peers->at(i).id == userID)
 					{
-						peers->at(i).threadManager.workers[requestID]->buffer.push_back(dataReceived);
-						//std::cout << "Received data for existing id(" << requestID << ")\n";
-						//std::cout << dataReceived << std::endl;
+						if (peers->at(i).threadManager.workers.find(requestID) != peers->at(i).threadManager.workers.end())
+						{
+							peers->at(i).threadManager.workers[requestID]->buffer.push_back(dataReceived);
+							//std::cout << "Received data for existing id(" << requestID << ")\n";
+							//std::cout << dataReceived << std::endl;
+						}
+						else
+						{
+							peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
+							peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer);
+							//std::cout << "Received new request - created new thread(id: " << requestID << ")\n";
+						}
 					}
-					else
-					{
-						peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
-						peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer);
-						//std::cout << "Received new request - created new thread(id: " << requestID << ")\n";
-					}
+
 				}
-			}	
+			}
 		}
 	}
 }
@@ -109,19 +112,43 @@ PeerInfo* Client::Connect(std::string& ip, short port)
 	return nullptr;
 }
 
-bool Client::Disconnect(std::string& ip)
+bool Client::Disconnect(std::string& ip, std::string requestID)
 {
+	peerArrayLocked = true;
+	Sleep(1);
+
 	for (int i = 0; i < peers->size(); i++)
 	{
 		if (inet_ntoa(peers->at(i).peerHint.sin_addr) == ip)
 		{
-			send(peers->at(i).peerSock, m_disconnect.c_str(), messageSize, 0);
+			_send(peers->at(i).peerSock, r_disconnect, requestID);
 			closesocket(peers->at(i).peerSock);
 			peers->erase(peers->begin() + i);
-			return true;
+			break;
 		}
 	}
+
+	peerArrayLocked = false; //DOESNT WORK STILL ERROR
+
 	return false;
+}
+
+void Client::clientDisconnect(SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseBuffer)
+{
+	peerArrayLocked = true;
+	Sleep(1);
+
+	for (int i = 0; i < peers->size(); i++)
+	{
+		if (peers->at(i).peerSock == peerSock)
+		{
+			closesocket(peerSock);
+			peers->erase(peers->begin() + i);
+			break;
+		}
+	}
+
+	peerArrayLocked = false;
 }
 
 bool Client::downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer)
@@ -176,7 +203,6 @@ bool Client::recvFile(SOCKET& peer, std::string fileRequested, std::string& requ
 				bytesReceived = fileData.length();
 				if (bytesReceived == 0 || bytesReceived == -1)
 				{
-					std::cout << "Error receiving the data!(" << WSAGetLastError() << ")\n" << std::endl;
 					errorOccured = true;
 					break;
 				}
@@ -324,6 +350,8 @@ std::thread Client::createRequestThreadServer(std::string request, SOCKET& peerS
 		return std::thread(&Client::sendFile, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
 	else if (request == r_getDirectoryContent)
 		return std::thread(&Client::sendDirectoryContent, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
+	else if (request == r_disconnect)
+		return std::thread(&Client::clientDisconnect, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
 
 }
 

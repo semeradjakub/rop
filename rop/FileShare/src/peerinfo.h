@@ -21,6 +21,7 @@ struct NetThreadManager
 
 struct PeerInfo
 {
+	bool lock = false;
 	SOCKET peerSock;
 	sockaddr_in peerHint;
 	std::string id = "";

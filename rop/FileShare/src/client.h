@@ -21,8 +21,9 @@ public:
 	~Client(); 
 	bool start(); 
 
+public:
 	PeerInfo* Connect(std::string& ip, short port);
-	bool Disconnect(std::string& ip); 
+	bool Disconnect(std::string& ip, std::string requestID);
 	bool downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer);
 	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target);
 	
@@ -31,6 +32,7 @@ private:
 	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID, std::vector<std::string>& responseBuffer);
 	void sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
 	void sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
+	void clientDisconnect(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
 
 private:
 	//core
@@ -55,7 +57,7 @@ public:
 private:
 	//control
 	bool running = false;
-	bool sharing = false;
+	bool peerArrayLocked = false;
 	bool fileSharingAllowed = true;
 	std::string* localID = nullptr;
 	std::string sharedDir = "C:\\Users\\Jakub\\Desktop\\ROP\\upload\\";
@@ -80,7 +82,6 @@ private:
 	status s_requestHandled = "\x73\x72\x65\x68";
 	status s_genericError = "\x73\x67\x65\x72";
 
-	message m_disconnect = "\x68\x62\x79\x65";
 	message m_welcome = "\x68\x65\x6C\x6F";
 	message m_connect = "\x68\x63\x6F\x6E";
 
@@ -89,4 +90,5 @@ private:
 	request r_getFileSize = "\x72\x67\x66\x73";
 	request r_sendFile = "\x72\x73\x65\x66";
 	request r_downloadFile = "\x72\x64\x77\x66";
+	request r_disconnect = "\x72\x62\x79\x65";
 };
