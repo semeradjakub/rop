@@ -35,5 +35,7 @@ private:
 
 	message m_disconnect = "\x68\x62\x79\x65";
 	message m_welcome = "\x68\x65\x6C\x6F";
+	message m_error = "\x68\x64\x6E\x6F";
 	message m_connect = "\x68\x63\x6F\x6E";
+
 };

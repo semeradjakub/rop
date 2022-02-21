@@ -23,7 +23,7 @@ public:
 
 public:
 	PeerInfo* Connect(std::string& ip, short port);
-	bool Disconnect(std::string& ip, std::string requestID);
+	void Disconnect(std::string& ip, std::string requestID);
 	bool downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer);
 	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target);
 	
@@ -56,8 +56,8 @@ public:
 
 private:
 	//control
+	SOCKET defaultSocket = 0;
 	bool running = false;
-	bool peerArrayLocked = false;
 	bool fileSharingAllowed = true;
 	std::string* localID = nullptr;
 	std::string sharedDir = "C:\\Users\\Jakub\\Desktop\\ROP\\upload\\";
@@ -83,6 +83,7 @@ private:
 	status s_genericError = "\x73\x67\x65\x72";
 
 	message m_welcome = "\x68\x65\x6C\x6F";
+	message m_error = "\x68\x64\x6E\x6F";
 	message m_connect = "\x68\x63\x6F\x6E";
 
 	request r_unknown = "\x72\x75\x6E\x6B";

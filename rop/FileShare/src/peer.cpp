@@ -47,13 +47,13 @@ bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target)
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55667);
+	return client->Connect(ip, 55666);
 }
 
-bool Peer::Disconnect(std::string& ip)
+void Peer::Disconnect(std::string& ip)
 {
 	std::string requestID = generateRandomId(16);
-	return client->Disconnect(ip, requestID);
+	client->Disconnect(ip, requestID);
 }
 
 PeerInfo* Peer::GetPeerById(std::string& id)
@@ -71,6 +71,51 @@ PeerInfo* Peer::GetPeerById(std::string& id)
 void Peer::setID(std::string localID)
 {
 	this->localID = localID;
+}
+
+std::string Peer::getFileSizeByFileName(PeerInfo& peer, std::string fileName)
+{
+	for (int i = 0; i < peer.files.size(); i++)
+	{
+		try
+		{
+			if (peer.files.at(i).fileName == fileName)
+			{
+				uint64_t size = peer.files.at(i).fileSize;
+				uint64_t sizeFinal = 0;
+				std::string sufix = "";
+
+				if (size < 1024)
+				{
+					sizeFinal = size;
+					sufix = "B";
+				}
+				else if (size >= 1024 && size < 1048576)
+				{
+					sufix = "kB";
+					sizeFinal = size / 1024;
+				}
+				else if (size >= 1048576 && size < 1073741824)
+				{
+					sufix = "MB";
+					sizeFinal = size / 1024 / 1024;
+				}
+				else if (size >= 1073741824)
+				{
+					sufix = "GB";
+					sizeFinal = size / 1024 / 1024 / 1024;
+				}
+
+				return std::to_string(sizeFinal) + sufix;
+			}
+		}
+		catch (std::exception e)
+		{
+			break;
+		}
+	}
+
+	return "-";
 }
 
 std::string Peer::getID()

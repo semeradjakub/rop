@@ -1,17 +1,18 @@
 ﻿  app.cpp
   client.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(120,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(141,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(230,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(274,7): warning C4101: dataBuffer: neodkazovaná lokální proměnná
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(305,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(122,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(136,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(224,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(268,7): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(299,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
   main.cpp
   peer.cpp
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(50,29): warning C4309: argument: zkrácení konstantní hodnoty
 C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(62,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(78,20): warning C4018: <: signed/unsigned – neshoda
   server.cpp
   Generování kódu...
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(368): warning C4715: Client::createRequestThreadClient: ne všechny cesty k ovládacím prvkům vrací hodnotu
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(356): warning C4715: Client::createRequestThreadServer: ne všechny cesty k ovládacím prvkům vrací hodnotu
-  LINK : Soubor C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe se nenašel nebo se při posledním přírůstkovém propojování nesestavil. Provádí se úplné propojení.
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(350): warning C4715: Client::createRequestThreadServer: ne všechny cesty k ovládacím prvkům vrací hodnotu
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(362): warning C4715: Client::createRequestThreadClient: ne všechny cesty k ovládacím prvkům vrací hodnotu
+     Vytváří se knihovna C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.lib a objekt C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exp.
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

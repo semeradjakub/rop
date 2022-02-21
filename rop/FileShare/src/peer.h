@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/listbox.h>
+#include <charconv>
 #include "server.h"
 #include "client.h"
 #include "peerinfo.h"
@@ -18,9 +19,10 @@ public:
 	bool DownloadFile(PeerInfo& peer, std::string fileName);
 	bool GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target);
 	PeerInfo* Connect(std::string& ip);
-	bool Disconnect(std::string& ip);
+	void Disconnect(std::string& ip);
 	PeerInfo* GetPeerById(std::string& id);
 	void setID(std::string localID);
+	std::string getFileSizeByFileName(PeerInfo& peer, std::string fileName);
 	std::string getID();
 
 	std::string generateRandomId(int length);

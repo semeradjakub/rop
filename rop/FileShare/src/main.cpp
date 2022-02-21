@@ -143,12 +143,16 @@ void Main::onPeerFileDClick(wxCommandEvent& event)
 	int selectedPeer = m_peerListBox->GetSelection();
 	std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 	PeerInfo* peer = localpeer.GetPeerById(id);
-	std::string fileName = m_fileListBox->GetString(m_fileListBox->GetSelection()).ToStdString();
-	fileName = fileName.substr(0, fileName.rfind(":"));
-
 	if (peer)
 	{
-		localpeer.DownloadFile(*peer, fileName);
+		std::string fileName = m_fileListBox->GetString(m_fileListBox->GetSelection()).ToStdString();
+		fileName = fileName.substr(0, fileName.rfind(":"));
+		std::string msg = "Download file " + fileName + " of size " + localpeer.getFileSizeByFileName(*peer, fileName) + "?";
+
+			if (wxMessageBox(msg, "File download", wxYES_NO) == wxYES)
+			{
+				localpeer.DownloadFile(*peer, fileName);
+			}
 	}
 }
 
@@ -171,9 +175,7 @@ void Main::disconnectFromPeer(wxCommandEvent& event)
 	{
 		std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 		std::string ip = inet_ntoa(localpeer.GetPeerById(id)->peerHint.sin_addr);
-		if (!localpeer.Disconnect(ip))
-			wxMessageBox("Client already disconnected", "Error");
-
+		localpeer.Disconnect(ip);
 		m_peerListBox->Delete(selectedPeer);
 	}
 }
