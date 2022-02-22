@@ -3,7 +3,7 @@
 Peer::Peer(std::string ip)
 {
 	WSAStartup(version, &wsaData);
-	client = new Client(&peers, &localID);
+	client = new Client(&peers, &localID, &requests);
 	server = new Server(&peers, &localID);
 	srand(time(0));
 }
@@ -31,17 +31,20 @@ std::string Peer::generateRandomId(int length)
 bool Peer::DownloadFile(PeerInfo& peer, std::string fileName)
 {
 	std::string requestID = generateRandomId(16);
-	//client->downloadFile(from, fileName, requestID, responseBuffer);
+	requests.push_back(requestID);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
-	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "file_download", requestID, fileName, peer.threadManager.workers[requestID]->buffer, nullptr);
+	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "file_download", requestID, fileName, peer.threadManager.workers[requestID]->buffer, nullptr, peer.threadManager.workers[requestID]->finished);
+	std::cout << "thread added... " << peer.threadManager.workers.size() << std::endl;
 	return true;
 }
 
 bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target)
 {
 	std::string requestID = generateRandomId(16);
+	requests.push_back(requestID);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
-	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "directory_get", requestID, "", peer.threadManager.workers[requestID]->buffer, target);
+	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "directory_get", requestID, "", peer.threadManager.workers[requestID]->buffer, target, peer.threadManager.workers[requestID]->finished);
+	std::cout << "thread added... " << peer.threadManager.workers.size() << std::endl;
 	return true;
 }
 
@@ -60,11 +63,41 @@ PeerInfo* Peer::GetPeerById(std::string& id)
 {
 	PeerInfo* peer = nullptr;
 	for (int i = 0; i < peers.size(); i++)
-		if (peers.at(i).id == id)
+	{
+		try
 		{
-			peer = &peers.at(i);
-			break;
+			if (peers.at(i).id == id)
+			{
+				peer = &peers.at(i);
+				break;
+			}
 		}
+		catch (std::exception e)
+		{
+			//handle
+		}
+	}
+	return peer;
+}
+
+PeerInfo* Peer::GetPeerByIp(std::string& ip)
+{
+	PeerInfo* peer = nullptr;
+	for (int i = 0; i < peers.size(); i++)
+	{
+		try
+		{
+			if (inet_ntoa(peers.at(i).peerHint.sin_addr) == ip)
+			{
+				peer = &peers.at(i);
+				break;
+			}
+		}
+		catch (std::exception e)
+		{
+			//handle
+		}
+	}
 	return peer;
 }
 
@@ -111,6 +144,7 @@ std::string Peer::getFileSizeByFileName(PeerInfo& peer, std::string fileName)
 		}
 		catch (std::exception e)
 		{
+			//handle
 			break;
 		}
 	}

@@ -17,22 +17,22 @@
 class Client
 {
 public:
-	Client(std::vector<PeerInfo>* peers, std::string* localID); 
+	Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests); 
 	~Client(); 
 	bool start(); 
 
 public:
 	PeerInfo* Connect(std::string& ip, short port);
 	void Disconnect(std::string& ip, std::string requestID);
-	bool downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer);
-	bool getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target);
+	void downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer, bool& finished);
+	void getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target, bool& finished);
 	
 private:
 	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
 	bool recvFile(SOCKET& peer, std::string fileRequested, std::string& requestID, std::vector<std::string>& responseBuffer);
-	void sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
-	void sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
-	void clientDisconnect(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer);
+	void sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished);
+	void sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished);
+	void clientDisconnect(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished);
 
 private:
 	//core
@@ -46,13 +46,13 @@ private:
 	u_long mode_nonblocking = 1;
 	void setSocketMode(SOCKET& sock, u_long& mode);
 	int64_t getFileSize(std::ifstream& file);
-	std::thread createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec);
+	std::thread createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec, bool& finished);
 	void _send(SOCKET& s, std::string buf, std::string& requestID);
-
+	std::vector<std::string>* requests = nullptr; //for thread/Worker object termination
 	std::string getResponse(std::vector<std::string>& vec);
 
 public:
-	std::thread createRequestThreadClient(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox* targetListBox);
+	std::thread createRequestThreadClient(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox* targetListBox, bool& finished);
 
 private:
 	//control

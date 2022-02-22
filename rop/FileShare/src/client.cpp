@@ -1,9 +1,10 @@
 #include "client.h"
 
-Client::Client(std::vector<PeerInfo>* peers, std::string* localID)
+Client::Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests)
 {
 	this->peers = peers;
 	this->localID = localID;
+	this->requests = requests;
 }
 
 Client::~Client()
@@ -59,18 +60,49 @@ void Client::run()
 					if (peers->at(i).threadManager.workers.find(requestID) != peers->at(i).threadManager.workers.end())
 					{
 						peers->at(i).threadManager.workers[requestID]->buffer.push_back(dataReceived);
-						//std::cout << "Received data for existing id(" << requestID << ")\n";
-						//std::cout << dataReceived << std::endl;
 					}
 					else
 					{
-						peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
-						peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer);
-						//std::cout << "Received new request - created new thread(id: " << requestID << ")\n";
+						try
+						{
+							requests->push_back(requestID);
+							peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
+							peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer, peers->at(i).threadManager.workers[requestID]->finished);
+							std::cout << "thread added... " << peers->at(i).threadManager.workers.size() << std::endl;
+						}
+						catch (std::exception e)
+						{
+							std::cout << e.what() << std::endl;
+						}
 					}
 				}
 			}
 			
+			//look for existing requests and delete them if finished
+			int requestsSize = requests->size();
+			for (int j = 0; j < requestsSize; j++)
+			{
+				try
+				{
+					if (peers->at(i).threadManager.workers.find(requests->at(j)) != peers->at(i).threadManager.workers.end())
+					{
+						if (peers->at(i).threadManager.workers[requests->at(j)]->finished)
+						{
+							peers->at(i).threadManager.workers[requests->at(j)]->thread.join();
+							delete peers->at(i).threadManager.workers[requests->at(j)];
+							peers->at(i).threadManager.workers.erase(requests->at(j));
+							requests->erase(requests->begin() + j);
+							requestsSize--;
+							std::cout << "thread terminated... " << peers->at(i).threadManager.workers.size() << std::endl;
+						}
+					}
+				}
+				catch (std::exception e)
+				{
+					std::cout << e.what() << std::endl;
+				}
+			}
+
 		}
 	}
 }
@@ -130,9 +162,8 @@ void Client::Disconnect(std::string& ip, std::string requestID)
 	}
 }
 
-void Client::clientDisconnect(SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseBuffer)
+void Client::clientDisconnect(SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished)
 {
-
 	for (int i = 0; i < peers->size(); i++)
 	{
 		if (peers->at(i).peerSock == peerSock)
@@ -143,22 +174,21 @@ void Client::clientDisconnect(SOCKET& peerSock, std::string& requestID, std::vec
 		}
 	}
 
+	finished = true;
 }
 
-bool Client::downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer)
+void Client::downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer, bool& finished)
 {
-	bool status = false;
 	if (peer.peerSock != INVALID_SOCKET)
 	{
 		if (requestFile(peer.peerSock, fileName, requestID, responseBuffer))
-			status = recvFile(peer.peerSock, fileName, requestID, responseBuffer);
+			recvFile(peer.peerSock, fileName, requestID, responseBuffer);
 	}
-
-	return status;
+	finished = true;
 }
 
 /*
-	adds header {id:number}-originalData
+	adds header {id:number}-data
 */
 void Client::_send(SOCKET& s, std::string buf, std::string& requestID)
 {
@@ -169,7 +199,7 @@ void Client::_send(SOCKET& s, std::string buf, std::string& requestID)
 bool Client::requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer)
 {
 	_send(peer, r_downloadFile, requestID);
-	getResponse(responseBuffer); //confirmation
+	getResponse(responseBuffer);
 	_send(peer, fileName, requestID);
 	if(getResponse(responseBuffer) == s_fileAvailable)
 		return true;
@@ -215,7 +245,7 @@ bool Client::recvFile(SOCKET& peer, std::string fileRequested, std::string& requ
 	return false;
 }
 
-void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer)
+void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished)
 {
 	if (peer != INVALID_SOCKET)
 	{
@@ -259,10 +289,12 @@ void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::str
 
 		inFile.close();
 	}
+
+	finished = true;
 }
 
-//working
-bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target)
+
+void Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target, bool& finished)
 {
 	peer.files.clear();
 	char dataBuffer[dataBufferSize];
@@ -288,11 +320,10 @@ bool Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vec
 		}
 	}
 
-	return true;
+	finished = true;
 }
 
-//working
-void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer)
+void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vector<std::string>& responseBuffer, bool& finished)
 {
 	if (peer != INVALID_SOCKET)
 	{
@@ -327,6 +358,8 @@ void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vec
 		}
 
 	}
+
+	finished = true;
 }
 
 int64_t Client::getFileSize(std::ifstream& file)
@@ -337,33 +370,32 @@ int64_t Client::getFileSize(std::ifstream& file)
 	return size;
 }
 
-std::thread Client::createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec)
+std::thread Client::createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec, bool& finished)
 {
-
 	if (request == r_downloadFile)
-		return std::thread(&Client::sendFile, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
+		return std::thread(&Client::sendFile, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec), std::ref(finished));
 	else if (request == r_getDirectoryContent)
-		return std::thread(&Client::sendDirectoryContent, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
+		return std::thread(&Client::sendDirectoryContent, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec), std::ref(finished));
 	else if (request == r_disconnect)
-		return std::thread(&Client::clientDisconnect, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec));
+		return std::thread(&Client::clientDisconnect, this, std::ref(peerSock), std::ref(requestID), std::ref(responseVec), std::ref(finished));
 
 }
 
-std::thread Client::createRequestThreadClient(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox* targetListBox)
+std::thread Client::createRequestThreadClient(PeerInfo& peer, std::string func, std::string& requestID, std::string fileName, std::vector<std::string>& responseVec, wxListBox* targetListBox, bool& finished)
 {
 	if (func == "directory_get")
 	{
-		return std::thread(&Client::getDirectoryContent, this, std::ref(peer), requestID, std::ref(responseVec), targetListBox);
+		return std::thread(&Client::getDirectoryContent, this, std::ref(peer), requestID, std::ref(responseVec), targetListBox, std::ref(finished));
 	}
 	else if (func == "file_download")
 	{
-		return std::thread(&Client::downloadFile, this, std::ref(peer), fileName, requestID, std::ref(responseVec));
+		return std::thread(&Client::downloadFile, this, std::ref(peer), fileName, requestID, std::ref(responseVec), std::ref(finished));
 	}
 }
 
 std::string Client::getResponse(std::vector<std::string>& vec)
 {
-	while (!vec.size()) { /*Sleep(1);*/ }
+	while (!vec.size()) {  }
 	std::string res = vec.at(0);
 	vec.erase(vec.begin());
 	return res;

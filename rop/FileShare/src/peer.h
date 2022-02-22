@@ -21,6 +21,7 @@ public:
 	PeerInfo* Connect(std::string& ip);
 	void Disconnect(std::string& ip);
 	PeerInfo* GetPeerById(std::string& id);
+	PeerInfo* GetPeerByIp(std::string& ip);
 	void setID(std::string localID);
 	std::string getFileSizeByFileName(PeerInfo& peer, std::string fileName);
 	std::string getID();
@@ -33,6 +34,7 @@ private:
 	WSAData wsaData;
 	const WORD version = MAKEWORD(3, 0);
 	std::vector<PeerInfo> peers;
+	std::vector<std::string> requests;
 
 private:
 	std::string localID = "";

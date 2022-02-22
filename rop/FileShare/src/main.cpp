@@ -87,7 +87,6 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	std::cout << "ID: " << localpeer.getID() << std::endl;
 }
 
-
 Main::~Main()
 {
 	//Disconnect events
@@ -159,7 +158,9 @@ void Main::onPeerFileDClick(wxCommandEvent& event)
 void Main::connectToPeer(wxCommandEvent& event)
 {
 	std::string ip = m_ipTextBox->GetValue().ToStdString();
-	PeerInfo* newConnection = localpeer.Connect(ip);
+	PeerInfo* newConnection = localpeer.GetPeerByIp(ip);
+	if (newConnection == nullptr)
+		newConnection = localpeer.Connect(ip);
 
 	if (newConnection != nullptr)
 		m_peerListBox->AppendString(newConnection->id);

@@ -13,7 +13,7 @@ struct NetThreadManager
 		std::vector<std::string> buffer;
 		//running thread
 		std::thread thread;
-		bool finished = true;
+		bool finished = false;
 	};
 	
 	std::map<std::string, Worker*> workers;
