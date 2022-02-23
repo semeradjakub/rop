@@ -49,6 +49,9 @@ protected:
 	wxButton* m_disconnectBtn;
 	wxPanel* filesPanel;
 	wxListBox* m_fileListBox;
+	//menu
+	wxMenuBar* m_mainMenuBar;
+	wxMenu* m_menuSettings;
 
 	//event functions
 	void showUserSettings(wxCommandEvent& event);
@@ -60,6 +63,9 @@ protected:
 
 	void connectToPeer(wxCommandEvent& event);
 	void disconnectFromPeer(wxCommandEvent& event);
+
+	void setDownloadDir(wxCommandEvent& event);
+	void setUploadDir(wxCommandEvent& event);
 
 
 	//Dialogs

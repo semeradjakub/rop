@@ -1,2 +1,9 @@
-﻿  main.cpp
+﻿  client.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(152,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(165,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(252,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(297,7): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(327,8): warning C4101: dataBuffer: neodkazovaná lokální proměnná
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(400): warning C4715: Client::createRequestThreadClient: ne všechny cesty k ovládacím prvkům vrací hodnotu
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\client.cpp(388): warning C4715: Client::createRequestThreadServer: ne všechny cesty k ovládacím prvkům vrací hodnotu
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

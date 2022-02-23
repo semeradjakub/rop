@@ -68,7 +68,6 @@ void Client::run()
 							requests->push_back(requestID);
 							peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
 							peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer, peers->at(i).threadManager.workers[requestID]->finished);
-							std::cout << "thread added... " << peers->at(i).threadManager.workers.size() << std::endl;
 						}
 						catch (std::exception e)
 						{
@@ -78,7 +77,7 @@ void Client::run()
 				}
 			}
 			
-			//look for existing requests and delete them if finished
+			//look for existing requests and delete them if finished executing
 			int requestsSize = requests->size();
 			for (int j = 0; j < requestsSize; j++)
 			{
@@ -93,7 +92,6 @@ void Client::run()
 							peers->at(i).threadManager.workers.erase(requests->at(j));
 							requests->erase(requests->begin() + j);
 							requestsSize--;
-							std::cout << "thread terminated... " << peers->at(i).threadManager.workers.size() << std::endl;
 						}
 					}
 				}
@@ -293,7 +291,6 @@ void Client::sendFile(SOCKET& peer, std::string& requestID, std::vector<std::str
 	finished = true;
 }
 
-
 void Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target, bool& finished)
 {
 	peer.files.clear();
@@ -301,7 +298,7 @@ void Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vec
 	int bytesReceived = 0;
 
 	_send(peer.peerSock, r_getDirectoryContent, requestID);
-		std::string req = getResponse(responseBuffer);
+	std::string req = getResponse(responseBuffer);
 
 	if (req == s_receivedRequest)
 	{
@@ -316,7 +313,7 @@ void Client::getDirectoryContent(PeerInfo& peer, std::string requestID, std::vec
 			peer.files.push_back(file);
 			_send(peer.peerSock, s_receivedData, requestID);
 			
-			target->AppendString(wxString(file.fileName + ":(" + std::to_string(file.fileSize) + " Bytes)"));
+			target->AppendString(wxString(file.fileName));
 		}
 	}
 
@@ -334,23 +331,32 @@ void Client::sendDirectoryContent(SOCKET& peer, std::string& requestID, std::vec
 
 		if (getResponse(responseBuffer) == s_readyToReceive)
 		{
-			for (auto& entry : std::filesystem::directory_iterator(sharedDir))
-			{ 
-				if (entry.is_regular_file())
+			if (sharedDir != "")
+			{
+				for (auto& entry : std::filesystem::directory_iterator(sharedDir))
 				{
-					std::string path = entry.path().string();
-					std::string subDirfileName = path.substr(path.rfind("\\") + 1, path.size() - path.rfind("\\"));
-					std::string fileSize = std::to_string(entry.file_size());
-					_send(peer, s_nextMetaFile, requestID);
-					getResponse(responseBuffer);
-					_send(peer, subDirfileName, requestID);
-					getResponse(responseBuffer);
-					_send(peer, fileSize, requestID);
-					getResponse(responseBuffer);
+					if (entry.is_regular_file())
+					{
+						std::string path = entry.path().string();
+						std::string subDirfileName = path.substr(path.rfind("\\") + 1, path.size() - path.rfind("\\"));
+						std::string fileSize = std::to_string(entry.file_size());
+						_send(peer, s_nextMetaFile, requestID);
+						getResponse(responseBuffer);
+						_send(peer, subDirfileName, requestID);
+						getResponse(responseBuffer);
+						_send(peer, fileSize, requestID);
+						getResponse(responseBuffer);
+					}
 				}
+
+				_send(peer, s_endMetaFile, requestID);
+			}
+			else
+			{
+				_send(peer, s_endMetaFile, requestID);
 			}
 
-			_send(peer, s_endMetaFile, requestID);
+			
 		}
 		else
 		{
@@ -399,4 +405,16 @@ std::string Client::getResponse(std::vector<std::string>& vec)
 	std::string res = vec.at(0);
 	vec.erase(vec.begin());
 	return res;
+}
+
+void Client::setDownloadDir(std::string path)
+{
+	path += "\\";
+	downloadDir = path;
+}
+
+void Client::setUploadDir(std::string path)
+{
+	path += "\\";
+	sharedDir = path;
 }

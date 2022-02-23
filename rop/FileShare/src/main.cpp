@@ -56,6 +56,18 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	mainSizerV->Add(filesPanel, 2, wxEXPAND, 0);
 	this->SetSizer(mainSizerV);
 	this->Layout();
+
+	m_mainMenuBar = new wxMenuBar(0);
+	m_menuSettings = new wxMenu();
+	wxMenuItem* m_menuItemChangeDownload;
+	m_menuItemChangeDownload = new wxMenuItem(m_menuSettings, wxID_ANY, wxString(wxT("set download directory")), wxEmptyString, wxITEM_NORMAL);
+	m_menuSettings->Append(m_menuItemChangeDownload);
+	wxMenuItem* m_menuItemChangeUpload;
+	m_menuItemChangeUpload = new wxMenuItem(m_menuSettings, wxID_ANY, wxString(wxT("share directory")), wxEmptyString, wxITEM_NORMAL);
+	m_menuSettings->Append(m_menuItemChangeUpload);
+	m_mainMenuBar->Append(m_menuSettings, wxT("settings"));
+	this->SetMenuBar(m_mainMenuBar);
+
 	this->Centre(wxBOTH);
 
 	// Connect Events
@@ -63,7 +75,8 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	m_connectBtn->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::connectToPeer), NULL, this);
 	m_disconnectBtn->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::disconnectFromPeer), NULL, this);
 	m_fileListBox->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(Main::onPeerFileDClick), NULL, this);
-
+	m_menuSettings->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::setDownloadDir), this, m_menuItemChangeDownload->GetId());
+	m_menuSettings->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::setUploadDir), this, m_menuItemChangeUpload->GetId());
 
 	std::string id;
 
@@ -145,7 +158,6 @@ void Main::onPeerFileDClick(wxCommandEvent& event)
 	if (peer)
 	{
 		std::string fileName = m_fileListBox->GetString(m_fileListBox->GetSelection()).ToStdString();
-		fileName = fileName.substr(0, fileName.rfind(":"));
 		std::string msg = "Download file " + fileName + " of size " + localpeer.getFileSizeByFileName(*peer, fileName) + "?";
 
 			if (wxMessageBox(msg, "File download", wxYES_NO) == wxYES)
@@ -178,5 +190,26 @@ void Main::disconnectFromPeer(wxCommandEvent& event)
 		std::string ip = inet_ntoa(localpeer.GetPeerById(id)->peerHint.sin_addr);
 		localpeer.Disconnect(ip);
 		m_peerListBox->Delete(selectedPeer);
+	}
+}
+
+void Main::setDownloadDir(wxCommandEvent& event)
+{
+	wxDirDialog downloadDirDialog(nullptr, "select target download directory", "", wxDD_DIR_MUST_EXIST | wxDD_DEFAULT_STYLE);
+
+	if (downloadDirDialog.ShowModal() == wxID_OK)
+	{
+		std::cout << downloadDirDialog.GetPath().ToStdString() << std::endl;
+		localpeer.setDownloadDir(downloadDirDialog.GetPath().ToStdString());
+	}
+}
+
+void Main::setUploadDir(wxCommandEvent& event)
+{
+	wxDirDialog uploadDirDialog(nullptr, "select shared directory", "", wxDD_DIR_MUST_EXIST | wxDD_DEFAULT_STYLE);
+
+	if (uploadDirDialog.ShowModal() == wxID_OK)
+	{
+		localpeer.setUploadDir(uploadDirDialog.GetPath().ToStdString());
 	}
 }

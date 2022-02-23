@@ -25,6 +25,10 @@ public:
 	void setID(std::string localID);
 	std::string getFileSizeByFileName(PeerInfo& peer, std::string fileName);
 	std::string getID();
+	void setDownloadDir(std::string path);
+	void setUploadDir(std::string path);
+	std::string getDownloadDir() { return client->getDownloadDir(); }
+	std::string getUploadDir() { return client->getUploadDir(); }
 
 	std::string generateRandomId(int length);
 

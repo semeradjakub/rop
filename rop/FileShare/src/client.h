@@ -26,6 +26,11 @@ public:
 	void Disconnect(std::string& ip, std::string requestID);
 	void downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer, bool& finished);
 	void getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target, bool& finished);
+
+	void setDownloadDir(std::string path);
+	void setUploadDir(std::string path);
+	std::string getDownloadDir() { return downloadDir; }
+	std::string getUploadDir() { return sharedDir;  }
 	
 private:
 	bool requestFile(SOCKET& peer, std::string fileName, std::string& requestID, std::vector<std::string>& responseBuffer);
@@ -60,8 +65,8 @@ private:
 	bool running = false;
 	bool fileSharingAllowed = true;
 	std::string* localID = nullptr;
-	std::string sharedDir = "C:\\Users\\Jakub\\Desktop\\ROP\\upload\\";
-	std::string downloadDir = "C:\\Users\\Jakub\\Desktop\\ROP\\download\\";
+	std::string sharedDir = "";
+	std::string downloadDir = "";
 
 private:
 	static const int dataBufferSize = 1024;

@@ -34,7 +34,6 @@ bool Peer::DownloadFile(PeerInfo& peer, std::string fileName)
 	requests.push_back(requestID);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
 	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "file_download", requestID, fileName, peer.threadManager.workers[requestID]->buffer, nullptr, peer.threadManager.workers[requestID]->finished);
-	std::cout << "thread added... " << peer.threadManager.workers.size() << std::endl;
 	return true;
 }
 
@@ -44,13 +43,12 @@ bool Peer::GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target)
 	requests.push_back(requestID);
 	peer.threadManager.workers[requestID] = new NetThreadManager::Worker();
 	peer.threadManager.workers[requestID]->thread = client->createRequestThreadClient(peer, "directory_get", requestID, "", peer.threadManager.workers[requestID]->buffer, target, peer.threadManager.workers[requestID]->finished);
-	std::cout << "thread added... " << peer.threadManager.workers.size() << std::endl;
 	return true;
 }
 
 PeerInfo* Peer::Connect(std::string& ip)
 {
-	return client->Connect(ip, 55666);
+	return client->Connect(ip, 55667);
 }
 
 void Peer::Disconnect(std::string& ip)
@@ -155,6 +153,16 @@ std::string Peer::getFileSizeByFileName(PeerInfo& peer, std::string fileName)
 std::string Peer::getID()
 {
 	return localID;
+}
+
+void Peer::setDownloadDir(std::string path)
+{
+	client->setDownloadDir(path);
+}
+
+void Peer::setUploadDir(std::string path)
+{
+	client->setUploadDir(path);
 }
 
 std::vector<PeerInfo>& Peer::getPeerList()
