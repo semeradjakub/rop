@@ -250,7 +250,6 @@ void Main::setDownloadDir(wxCommandEvent& event)
 
 	if (downloadDirDialog.ShowModal() == wxID_OK)
 	{
-		std::cout << downloadDirDialog.GetPath().ToStdString() << std::endl;
 		localpeer.setDownloadDir(downloadDirDialog.GetPath().ToStdString());
 	}
 }
