@@ -483,10 +483,60 @@ void Client::setUploadDir(std::string path)
 
 void Client::punchHole(ServerInfo& server, std::string ip, short port)
 {
+	char dataBuffer[dataBufferSize];
+	int bytesReceived = 0;
+
+	SOCKADDR_IN localAddr;
+	localAddr.sin_port = htons(LISTENPORT);
+	localAddr.sin_family = AF_INET;
+	localAddr.sin_addr.s_addr = inet_addr(LOCALHOST);
+
+	int size = sizeof(server.hint);
+
+	SOCKET connectSocket = socket(AF_INET, SOCK_DGRAM, 0);
+
+	SOCKADDR_IN clientAddr;
+	clientAddr.sin_port = htons(LISTENPORT);
+	clientAddr.sin_family = AF_INET;
+	clientAddr.sin_addr.S_un.S_addr = inet_addr(ip.c_str());
+
+	bind(connectSocket, (LPSOCKADDR)&clientAddr, sizeof(clientAddr));
+
+	int value = 64 * 1024;
+	setsockopt(connectSocket, SOL_SOCKET, SO_SNDBUF, (char*)&value, sizeof(value));
+	setsockopt(connectSocket, SOL_SOCKET, SO_RCVBUF, (char*)&value, sizeof(value));
+
+	std::string request = "punch";
+
+	sendto(connectSocket, request.c_str(), request.length(), 0, (sockaddr*)&localAddr, size);
+
+	bool notFound = true;
+
+	std::string endpoint;
+
+	while (notFound) {
+		SOCKADDR_IN remoteAddr;
+		int	remoteAddrLen = sizeof(remoteAddr);
+
+		int iResult = recvfrom(connectSocket, dataBuffer, dataBufferSize, 0, (sockaddr*)&remoteAddr, &remoteAddrLen);
+
+		if (iResult > 0) {
+			endpoint = std::string(dataBuffer, dataBuffer + iResult);
+
+			std::cout << "Peer-to-peer Endpoint: " << endpoint << std::endl;
+
+			notFound = false;
+		}
+		else {
+
+			std::cout << WSAGetLastError();
+		}
+	}
+
+	sendto(connectSocket, request.c_str(), request.length(), 0, (sockaddr*)&localAddr, size);
 
 }
 
 void Client::terminateAllThreadsClearPeerList()
 {
-
 }
