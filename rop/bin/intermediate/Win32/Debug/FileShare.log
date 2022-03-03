@@ -1,6 +1,2 @@
-﻿  peer.cpp
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(51,29): warning C4309: argument: zkrácení konstantní hodnoty
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(63,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(84,20): warning C4018: <: signed/unsigned – neshoda
-C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(109,20): warning C4018: <: signed/unsigned – neshoda
+﻿  main.cpp
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe

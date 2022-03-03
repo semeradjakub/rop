@@ -29,3 +29,9 @@ struct PeerInfo
 
 	NetThreadManager threadManager;
 };
+
+struct ServerInfo
+{
+	SOCKET sock;
+	sockaddr_in hint;
+};

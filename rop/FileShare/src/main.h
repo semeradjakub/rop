@@ -39,29 +39,30 @@ private:
 private:
 	wxBoxSizer* mainSizerV;
 
+	bool running = false;
+	std::thread thread;
+	void main();
+
 protected:
 	//GUI compoments
 	wxPanel* peerPanel;
 	wxBoxSizer* peerSizerV;
 	wxListBox* m_peerListBox;
-	wxTextCtrl* m_ipTextBox;
-	wxButton* m_connectBtn;
-	wxButton* m_disconnectBtn;
 	wxPanel* filesPanel;
 	wxListBox* m_fileListBox;
-	//menu
+	wxStaticText* m_downloadedFileName;
+	wxGauge* m_gaugeDownloadProgress;
 	wxMenuBar* m_mainMenuBar;
+	wxMenu* m_menuConnections;
 	wxMenu* m_menuSettings;
 
 	//event functions
-	void showUserSettings(wxCommandEvent& event);
-	void showNetworkSettings(wxCommandEvent& event);
-	void showGeneralSettings(wxCommandEvent& event);
-
 	void onPeerFileDClick(wxCommandEvent& event);
 	void onPeerSelect(wxCommandEvent& event);
 
 	void connectToPeer(wxCommandEvent& event);
+	void connectToPool(wxCommandEvent& event);
+	void disconnectFromAll(wxCommandEvent& event);
 	void disconnectFromPeer(wxCommandEvent& event);
 
 	void setDownloadDir(wxCommandEvent& event);

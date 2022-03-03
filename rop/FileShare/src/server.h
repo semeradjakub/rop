@@ -11,7 +11,7 @@
 class Server
 {
 public:
-	Server(std::vector<PeerInfo>* peers, std::string* localID);
+	Server(std::vector<PeerInfo>* peers, std::string* localID, std::queue<std::string>* addedPeers);
 	~Server();
 	bool start();
 	void acceptConnections();
@@ -21,6 +21,7 @@ private:
 	std::thread thread;
 	SOCKET listenSock = 0;
 	std::vector<PeerInfo>* peers;
+	std::queue<std::string>* addedPeers;
 	std::string* localID = nullptr;
 
 private:

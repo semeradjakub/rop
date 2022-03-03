@@ -3,8 +3,8 @@
 Peer::Peer(std::string ip)
 {
 	WSAStartup(version, &wsaData);
-	client = new Client(&peers, &localID, &requests);
-	server = new Server(&peers, &localID);
+	client = new Client(&peers, &localID, &requests,  &deletedPeers);
+	server = new Server(&peers, &localID, &addedPeers);
 	srand(time(0));
 }
 
@@ -51,10 +51,20 @@ PeerInfo* Peer::Connect(std::string& ip)
 	return client->Connect(ip, 55666);
 }
 
+void Peer::ConnectWan(std::string& ip)
+{
+	client->ConnectWan(ip, LISTENPORT);
+}
+
 void Peer::Disconnect(std::string& ip)
 {
 	std::string requestID = generateRandomId(16);
 	client->Disconnect(ip, requestID);
+}
+
+void Peer::DisconnectFromAll()
+{
+	client->DisconnectFromAll();
 }
 
 PeerInfo* Peer::GetPeerById(std::string& id)

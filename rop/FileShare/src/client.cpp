@@ -1,10 +1,11 @@
 #include "client.h"
 
-Client::Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests)
+Client::Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests, std::queue<std::string>* deletedPeers)
 {
 	this->peers = peers;
 	this->localID = localID;
 	this->requests = requests;
+	this->deletedPeers = deletedPeers;
 }
 
 Client::~Client()
@@ -68,6 +69,11 @@ void Client::run()
 							requests->push_back(requestID);
 							peers->at(i).threadManager.workers[requestID] = new NetThreadManager::Worker();
 							peers->at(i).threadManager.workers[requestID]->thread = createRequestThreadServer(dataReceived, peerSock, requestID, peers->at(i).threadManager.workers[requestID]->buffer, peers->at(i).threadManager.workers[requestID]->finished);
+
+							if (dataReceived == r_disconnect)
+							{
+								deletedPeers->push(userID);
+							}
 						}
 						catch (std::exception e)
 						{
@@ -77,10 +83,11 @@ void Client::run()
 				}
 			}
 			
-			//look for existing requests and delete them if finished executing
+			/*
 			int requestsSize = requests->size();
 			for (int j = 0; j < requestsSize; j++)
 			{
+				requestsSize = requests->size();
 				try
 				{
 					if (peers->at(i).threadManager.workers.find(requests->at(j)) != peers->at(i).threadManager.workers.end())
@@ -98,8 +105,9 @@ void Client::run()
 				catch (std::exception e)
 				{
 					std::cout << e.what() << std::endl;
+					break;
 				}
-			}
+			}*/
 
 		}
 	}
@@ -145,6 +153,60 @@ PeerInfo* Client::Connect(std::string& ip, short port)
 	}
 
 	return nullptr;
+}
+
+/*
+* connects to server which works as a bridge between peers(for tcp hole punching)
+*/
+ServerInfo* Client::ConnectWan(std::string serverIP, short port)
+{
+	int bytesReceived;
+	char data[dataBufferSize];
+	ackServer.sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	
+	std::vector<std::string> toConnect;
+
+	ackServer.hint.sin_family = AF_INET;
+	ackServer.hint.sin_port = htons(port);
+	ackServer.hint.sin_addr.S_un.S_addr = inet_addr(serverIP.c_str());
+
+	setSocketMode(ackServer.sock, mode_blocking);
+
+	if (connect(ackServer.sock, (sockaddr*)&ackServer.hint, sizeof(ackServer.hint)) != SOCKET_ERROR)
+	{
+		bytesReceived = recv(ackServer.sock, data, dataBufferSize, 0);
+
+		if (std::string(data, bytesReceived) == m_serverWelcome)
+		{
+			send(ackServer.sock, s_readyToReceive.c_str(), s_readyToReceive.length(), 0);
+			bytesReceived = recv(ackServer.sock, data, dataBufferSize, 0);
+			while (std::string(data, bytesReceived) != s_endPeer)
+			{
+				send(ackServer.sock, s_receivedData.c_str(), s_receivedData.length(), 0);
+				bytesReceived = recv(ackServer.sock, data, dataBufferSize, 0);
+
+				toConnect.push_back(std::string(data, bytesReceived));
+
+				send(ackServer.sock, s_receivedData.c_str(), s_receivedData.length(), 0);
+				bytesReceived = recv(ackServer.sock, data, dataBufferSize, 0);
+			}
+
+
+			for (int i = 0; i < toConnect.size(); i++)
+			{
+				punchHole(ackServer, toConnect.at(i), LISTENPORT);
+				Connect(toConnect.at(i), LISTENPORT);
+			}
+
+			setSocketMode(ackServer.sock, mode_nonblocking);
+		}
+	}
+
+	return nullptr;
+}
+
+void Client::DisconnectFromAll()
+{
 }
 
 void Client::Disconnect(std::string& ip, std::string requestID)
@@ -417,4 +479,14 @@ void Client::setUploadDir(std::string path)
 {
 	path += "\\";
 	sharedDir = path;
+}
+
+void Client::punchHole(ServerInfo& server, std::string ip, short port)
+{
+
+}
+
+void Client::terminateAllThreadsClearPeerList()
+{
+
 }

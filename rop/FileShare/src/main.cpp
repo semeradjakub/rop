@@ -27,14 +27,6 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	m_peerListBox->SetMinSize(wxSize(100, 100));
 	peerSizerH->Add(m_peerListBox, 1, wxEXPAND, 15);
 	peerSizerV->Add(peerSizerH, 1, wxALL | wxEXPAND, 5);
-	m_ipTextBox = new wxTextCtrl(peerPanel, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-	peerSizerV->Add(m_ipTextBox, 0, wxALL | wxEXPAND, 3);
-	m_connectBtn = new wxButton(peerPanel, wxID_ANY, wxT("Connect"), wxPoint(-1, -1), wxSize(-1, -1), 0);
-	m_connectBtn->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial")));
-	peerSizerV->Add(m_connectBtn, 0, wxALL | wxEXPAND, 3);
-	m_disconnectBtn = new wxButton(peerPanel, wxID_ANY, wxT("Disconnect"), wxDefaultPosition, wxDefaultSize, 0);
-	m_disconnectBtn->SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial")));
-	peerSizerV->Add(m_disconnectBtn, 0, wxALL | wxEXPAND, 3);
 	peerPanel->SetSizer(peerSizerV);
 	peerPanel->Layout();
 	peerSizerV->Fit(peerPanel);
@@ -49,34 +41,54 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	filesSizerH = new wxBoxSizer(wxHORIZONTAL);
 	m_fileListBox = new wxListBox(filesPanel, wxID_ANY, wxDefaultPosition, wxSize(500, 500), 0, NULL, 0);
 	m_fileListBox->SetMinSize(wxSize(500, 500));
-	filesSizerH->Add(m_fileListBox, 1, wxALL | wxEXPAND, 5);
+	filesSizerH->Add(m_fileListBox, 1, wxALL | wxEXPAND, 3);
 	filesSizerV->Add(filesSizerH, 1, wxALL | wxEXPAND, 5);
+	m_downloadedFileName = new wxStaticText(filesPanel, wxID_ANY, wxT("downloading: "), wxDefaultPosition, wxDefaultSize, 0);
+	m_downloadedFileName->Wrap(-1);
+	filesSizerV->Add(m_downloadedFileName, 0, wxALL, 3);
+	m_gaugeDownloadProgress = new wxGauge(filesPanel, wxID_ANY, 10000, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
+	m_gaugeDownloadProgress->SetValue(0);
+	filesSizerV->Add(m_gaugeDownloadProgress, 0, wxALL | wxEXPAND, 3);
 	filesPanel->SetSizer(filesSizerV);
 	filesPanel->Layout();
 	mainSizerV->Add(filesPanel, 2, wxEXPAND, 0);
 	this->SetSizer(mainSizerV);
 	this->Layout();
-
 	m_mainMenuBar = new wxMenuBar(0);
+	m_menuConnections = new wxMenu();
+	wxMenuItem* m_menuItemConnectServ;
+	m_menuItemConnectServ = new wxMenuItem(m_menuConnections, wxID_ANY, wxString(wxT("Connect via server")), wxEmptyString, wxITEM_NORMAL);
+	m_menuConnections->Append(m_menuItemConnectServ);
+	wxMenuItem* m_menuItemConnectDir;
+	m_menuItemConnectDir = new wxMenuItem(m_menuConnections, wxID_ANY, wxString(wxT("Connect directly(only LAN)")), wxEmptyString, wxITEM_NORMAL);
+	m_menuConnections->Append(m_menuItemConnectDir);
+	wxMenuItem* m_menuItemDisconnectSel;
+	m_menuItemDisconnectSel = new wxMenuItem(m_menuConnections, wxID_ANY, wxString(wxT("Disconnect(selected peer)")), wxEmptyString, wxITEM_NORMAL);
+	m_menuConnections->Append(m_menuItemDisconnectSel);
+	wxMenuItem* m_menuItemDisconnectAll;
+	m_menuItemDisconnectAll = new wxMenuItem(m_menuConnections, wxID_ANY, wxString(wxT("Disconnect(all)")), wxEmptyString, wxITEM_NORMAL);
+	m_menuConnections->Append(m_menuItemDisconnectAll);
+	m_mainMenuBar->Append(m_menuConnections, wxT("CONNECTIONS"));
 	m_menuSettings = new wxMenu();
 	wxMenuItem* m_menuItemChangeDownload;
 	m_menuItemChangeDownload = new wxMenuItem(m_menuSettings, wxID_ANY, wxString(wxT("set download directory")), wxEmptyString, wxITEM_NORMAL);
 	m_menuSettings->Append(m_menuItemChangeDownload);
 	wxMenuItem* m_menuItemChangeUpload;
-	m_menuItemChangeUpload = new wxMenuItem(m_menuSettings, wxID_ANY, wxString(wxT("share directory")), wxEmptyString, wxITEM_NORMAL);
+	m_menuItemChangeUpload = new wxMenuItem(m_menuSettings, wxID_ANY, wxString(wxT("set shared directory")), wxEmptyString, wxITEM_NORMAL);
 	m_menuSettings->Append(m_menuItemChangeUpload);
-	m_mainMenuBar->Append(m_menuSettings, wxT("settings"));
+	m_mainMenuBar->Append(m_menuSettings, wxT("SETTINGS"));
 	this->SetMenuBar(m_mainMenuBar);
-
 	this->Centre(wxBOTH);
 
 	// Connect Events
 	m_peerListBox->Connect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(Main::onPeerSelect), NULL, this);
-	m_connectBtn->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::connectToPeer), NULL, this);
-	m_disconnectBtn->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::disconnectFromPeer), NULL, this);
 	m_fileListBox->Connect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(Main::onPeerFileDClick), NULL, this);
 	m_menuSettings->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::setDownloadDir), this, m_menuItemChangeDownload->GetId());
 	m_menuSettings->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::setUploadDir), this, m_menuItemChangeUpload->GetId());
+	m_menuConnections->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::connectToPeer), this, m_menuItemConnectDir->GetId());
+	m_menuConnections->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::disconnectFromPeer), this, m_menuItemDisconnectSel->GetId());
+	m_menuConnections->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::disconnectFromAll), this, m_menuItemDisconnectAll->GetId());
+	m_menuConnections->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(Main::connectToPool), this, m_menuItemConnectServ->GetId());
 
 	std::string id;
 
@@ -97,16 +109,40 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	}
 
 	localpeer.setID(id);
-	std::cout << "ID: " << localpeer.getID() << std::endl;
+
+	running = true;
+	thread = std::thread(&Main::main, this);
 }
 
 Main::~Main()
 {
 	//Disconnect events
 	m_peerListBox->Disconnect(wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler(Main::onPeerSelect), NULL, this);
-	m_connectBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::connectToPeer), NULL, this);
-	m_disconnectBtn->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(Main::disconnectFromPeer), NULL, this);
 	m_fileListBox->Disconnect(wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(Main::onPeerFileDClick), NULL, this);
+	running = false;
+	thread.join();
+}
+
+void Main::main()
+{
+	while (running)
+	{
+		if (localpeer.addedPeers.size())
+		{
+			m_peerListBox->AppendString(wxString(localpeer.addedPeers.front()));
+			localpeer.addedPeers.pop();
+		}
+
+		if (localpeer.deletedPeers.size())
+		{
+			int pos = m_peerListBox->FindString(wxString(localpeer.deletedPeers.front()), true);
+			if (pos == m_peerListBox->GetSelection() && pos != -1)
+				m_peerListBox->Deselect(pos);
+			if(pos != -1)
+				m_peerListBox->Delete(pos);
+			localpeer.deletedPeers.pop();
+		}
+	}
 }
 
 void Main::onClose(wxCloseEvent& evt)
@@ -121,21 +157,6 @@ void Main::onClose(wxCloseEvent& evt)
 	}
 
 	Destroy();
-}
-
-void Main::showUserSettings(wxCommandEvent& event)
-{
-
-}
-
-void Main::showNetworkSettings(wxCommandEvent& event)
-{
-
-}
-
-void Main::showGeneralSettings(wxCommandEvent& event)
-{
-
 }
 
 void Main::onPeerSelect(wxCommandEvent& event)
@@ -169,15 +190,41 @@ void Main::onPeerFileDClick(wxCommandEvent& event)
 
 void Main::connectToPeer(wxCommandEvent& event)
 {
-	std::string ip = m_ipTextBox->GetValue().ToStdString();
-	PeerInfo* newConnection = localpeer.GetPeerByIp(ip);
-	if (newConnection == nullptr)
-		newConnection = localpeer.Connect(ip);
+	wxTextEntryDialog ted(nullptr, "Enter IP address: ", "Connect");
 
-	if (newConnection != nullptr)
-		m_peerListBox->AppendString(newConnection->id);
-	else
-		wxMessageBox("Connection failed!", "Error");
+	if (ted.ShowModal() == wxID_OK)
+	{
+		std::string ip = ted.GetValue().ToStdString();
+		PeerInfo* newConnection = localpeer.GetPeerByIp(ip);
+		if (newConnection == nullptr)
+		{
+			newConnection = localpeer.Connect(ip);
+
+			if (newConnection != nullptr)
+				localpeer.addedPeers.push(newConnection->id);
+			else
+				wxMessageBox("Connection failed!", "Error");
+		}
+		else
+		{
+			wxMessageBox("Already connected!", "Error");
+		}
+	}
+}
+
+void Main::connectToPool(wxCommandEvent& event)
+{
+	wxTextEntryDialog ted(nullptr, "Enter IP address: ", "Connect");
+	if (ted.ShowModal() == wxID_OK)
+	{
+		std::string ip = ted.GetValue().ToStdString();
+		localpeer.ConnectWan(ip);
+	}
+}
+
+void Main::disconnectFromAll(wxCommandEvent& event)
+{
+	localpeer.DisconnectFromAll();
 }
 
 void Main::disconnectFromPeer(wxCommandEvent& event)
@@ -188,8 +235,12 @@ void Main::disconnectFromPeer(wxCommandEvent& event)
 	{
 		std::string id = m_peerListBox->GetString(selectedPeer).ToStdString();
 		std::string ip = inet_ntoa(localpeer.GetPeerById(id)->peerHint.sin_addr);
+		localpeer.deletedPeers.push(id);
 		localpeer.Disconnect(ip);
-		m_peerListBox->Delete(selectedPeer);
+	}
+	else
+	{
+		wxMessageBox("No peer selected!", "Error");
 	}
 }
 

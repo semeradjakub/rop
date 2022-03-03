@@ -17,13 +17,15 @@
 class Client
 {
 public:
-	Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests); 
+	Client(std::vector<PeerInfo>* peers, std::string* localID, std::vector<std::string>* requests, std::queue<std::string>* deletedPeers); 
 	~Client(); 
 	bool start(); 
 
 public:
 	PeerInfo* Connect(std::string& ip, short port);
+	ServerInfo* ConnectWan(std::string serverIP, short port);
 	void Disconnect(std::string& ip, std::string requestID);
+	void DisconnectFromAll();
 	void downloadFile(PeerInfo& peer, std::string fileName, std::string requestID, std::vector<std::string>& responseBuffer, bool& finished);
 	void getDirectoryContent(PeerInfo& peer, std::string requestID, std::vector<std::string>& responseBuffer, wxListBox* target, bool& finished);
 
@@ -44,6 +46,8 @@ private:
 	void run();
 	std::thread thread;
 	std::vector<PeerInfo>* peers;
+	std::queue<std::string>* deletedPeers;
+	ServerInfo ackServer;
 
 private:
 	//utility
@@ -53,6 +57,8 @@ private:
 	int64_t getFileSize(std::ifstream& file);
 	std::thread createRequestThreadServer(std::string request, SOCKET& peerSock, std::string& requestID, std::vector<std::string>& responseVec, bool& finished);
 	void _send(SOCKET& s, std::string buf, std::string& requestID);
+	void punchHole(ServerInfo& server, std::string ip, short port);
+	void terminateAllThreadsClearPeerList();
 	std::vector<std::string>* requests = nullptr; //for thread/Worker object termination
 	std::string getResponse(std::vector<std::string>& vec);
 
@@ -82,12 +88,15 @@ private:
 	status s_readyToReceive = "\x73\x72\x74\x72";
 	status s_nextMetaFile = "\x73\x6E\x6D\x66";
 	status s_endMetaFile = "\x73\x65\x6D\x66";
+	status s_nextPeer = "\x73\x74\x72\x71";
+	status s_endPeer = "\x73\x70\x71\x74";
 	status s_receivedRequest = "\x73\x72\x65\x72";
 	status s_receivedData = "\x73\x72\x65\x64";
 	status s_requestHandled = "\x73\x72\x65\x68";
 	status s_genericError = "\x73\x67\x65\x72";
 
 	message m_welcome = "\x68\x65\x6C\x6F";
+	message m_serverWelcome = "\x68\x6F\x6E\x66";
 	message m_error = "\x68\x64\x6E\x6F";
 	message m_connect = "\x68\x63\x6F\x6E";
 

@@ -19,7 +19,9 @@ public:
 	bool DownloadFile(PeerInfo& peer, std::string fileName);
 	bool GetPeerDirectoryContent(PeerInfo& peer, wxListBox* target);
 	PeerInfo* Connect(std::string& ip);
+	void ConnectWan(std::string& ip);
 	void Disconnect(std::string& ip);
+	void DisconnectFromAll();
 	PeerInfo* GetPeerById(std::string& id);
 	PeerInfo* GetPeerByIp(std::string& ip);
 	void setID(std::string localID);
@@ -40,6 +42,10 @@ private:
 	std::vector<PeerInfo> peers;
 	std::vector<std::string> requests;
 
+public:
+	//for GUI
+	std::queue<std::string> addedPeers;
+	std::queue<std::string> deletedPeers;
 private:
 	std::string localID = "";
 	uint8_t defaultIdLength = 12;

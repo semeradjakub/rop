@@ -1,9 +1,10 @@
 #include "server.h"
 
-Server::Server(std::vector<PeerInfo>* peers, std::string* localID)
+Server::Server(std::vector<PeerInfo>* peers, std::string* localID, std::queue<std::string>* addedPeers)
 {
 	this->peers = peers;
 	this->localID = localID;
+	this->addedPeers = addedPeers;
 	listenSock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	sockaddr_in listenHint;
 	listenHint.sin_family = AF_INET;
@@ -68,6 +69,7 @@ void Server::acceptConnections()
 	if (newPeerSock != SOCKET_ERROR)
 	{
 		recv(newPeerSock, data, dataBufferSize, 0);
+
 		if (std::string(data, messageSize) == m_connect)
 		{
 			send(newPeerSock, m_welcome.c_str(), messageSize, 0);
@@ -80,6 +82,7 @@ void Server::acceptConnections()
 			u_long nonblocking = 1;
 			ioctlsocket(newPeer.peerSock, FIONBIO, &nonblocking);
 			peers->push_back(newPeer);
+			addedPeers->push(newPeer.id);
 		}
 	}
 }
