@@ -43,6 +43,9 @@ private:
 	std::thread thread;
 	void main();
 
+	int downloadReq = 0;
+	std::vector<std::string> fileNamesToDownload;
+
 protected:
 	//GUI compoments
 	wxPanel* peerPanel;
@@ -51,6 +54,7 @@ protected:
 	wxPanel* filesPanel;
 	wxListBox* m_fileListBox;
 	wxStaticText* m_downloadedFileName;
+	wxStaticText* m_downloadQueueLabel;
 	wxGauge* m_gaugeDownloadProgress;
 	wxMenuBar* m_mainMenuBar;
 	wxMenu* m_menuConnections;

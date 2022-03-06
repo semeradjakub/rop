@@ -46,6 +46,9 @@ Main::Main(Peer& localpeer) : wxFrame(nullptr, MAIN_WINDOW_ID, "ROP", wxPoint(10
 	m_downloadedFileName = new wxStaticText(filesPanel, wxID_ANY, wxT("downloading: "), wxDefaultPosition, wxDefaultSize, 0);
 	m_downloadedFileName->Wrap(-1);
 	filesSizerV->Add(m_downloadedFileName, 0, wxALL, 3);
+	m_downloadQueueLabel = new wxStaticText(filesPanel, wxID_ANY, wxT("MyLabel"), wxDefaultPosition, wxDefaultSize, 0);
+	m_downloadQueueLabel->Wrap(-1);
+	filesSizerV->Add(m_downloadQueueLabel, 0, wxALL, 5);
 	m_gaugeDownloadProgress = new wxGauge(filesPanel, wxID_ANY, 10000, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL);
 	m_gaugeDownloadProgress->SetValue(0);
 	filesSizerV->Add(m_gaugeDownloadProgress, 0, wxALL | wxEXPAND, 3);

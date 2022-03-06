@@ -1,2 +1,10 @@
-﻿  main.cpp
+﻿  app.cpp
+  main.cpp
+  peer.cpp
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(51,29): warning C4309: argument: zkrácení konstantní hodnoty
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(56,25): warning C4309: argument: zkrácení konstantní hodnoty
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(73,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(94,20): warning C4018: <: signed/unsigned – neshoda
+C:\Users\Jakub\Desktop\ROP\rop\FileShare\src\peer.cpp(119,20): warning C4018: <: signed/unsigned – neshoda
+  Generování kódu...
   FileShare.vcxproj -> C:\Users\Jakub\Desktop\ROP\rop\bin\Win32\Debug\FileShare.exe
